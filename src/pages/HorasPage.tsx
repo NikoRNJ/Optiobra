@@ -102,7 +102,8 @@ export function HorasPage() {
 
   const handleAprobar = async (id: string) => {
     try {
-      await aprobarRegistro(id, 'Admin'); // En producción, usar el usuario actual
+      // TODO: Replace with actual user context when authentication is implemented
+      await aprobarRegistro(id, 'Sistema');
       await cargarRegistros(filtroObra);
     } catch (error) {
       console.error('Error aprobando registro:', error);

@@ -101,8 +101,9 @@ export const useHoraStore = create<HoraState>((set, get) => ({
       set({ isLoading: false });
       return id;
     } catch (error) {
-      set({ error: 'Error al crear registro', isLoading: false });
-      console.error('Error creando registro:', error);
+      const errorMessage = 'Error al crear registro de horas';
+      set({ error: errorMessage, isLoading: false });
+      console.error(errorMessage, error);
       throw error;
     }
   },
