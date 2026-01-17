@@ -25,5 +25,22 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendors principales
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-router': ['react-router-dom'],
+          // Librerías de UI/utilidades
+          'vendor-ui': ['lucide-react'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'vendor-state': ['zustand'],
+          'vendor-db': ['dexie'],
+          'vendor-dates': ['date-fns'],
+        },
+      },
+    },
+    // Aumentar límite de advertencia a 600KB mientras optimizamos
+    chunkSizeWarningLimit: 600,
   },
 })
