@@ -11,7 +11,6 @@ import { z } from 'zod';
 import { ArrowLeft, Save } from 'lucide-react';
 import { 
   Card, 
-  CardContent,
   Button, 
   Input, 
   Select,
@@ -37,10 +36,10 @@ const obraSchema = z.object({
 type ObraFormData = z.infer<typeof obraSchema>;
 
 const estadoOptions = [
-  { value: 'planificacion', label: 'En planificación' },
-  { value: 'en_progreso', label: 'En progreso' },
-  { value: 'pausada', label: 'Pausada' },
-  { value: 'finalizada', label: 'Finalizada' },
+  { value: 'planificacion', label: 'PRE-EJECUCIÓN / PLAN' },
+  { value: 'en_progreso', label: 'FASE CONSTRUCTIVA' },
+  { value: 'pausada', label: 'DETENIDO / STANDBY' },
+  { value: 'finalizada', label: 'ENTREGA FINALIZADA' },
 ];
 
 export function NuevaObraPage() {
@@ -64,9 +63,9 @@ export function NuevaObraPage() {
     setIsSubmitting(true);
     try {
       await crearObra({
-        nombre: data.nombre,
-        cliente: data.cliente,
-        direccion: data.direccion,
+        nombre: data.nombre.toUpperCase(),
+        cliente: data.cliente.toUpperCase(),
+        direccion: data.direccion.toUpperCase(),
         telefono: data.telefono,
         fechaInicio: data.fechaInicio,
         fechaEstimadaFin: data.fechaEstimadaFin || undefined,
@@ -74,10 +73,10 @@ export function NuevaObraPage() {
         presupuesto: data.presupuesto ? parseFloat(data.presupuesto) : undefined,
         descripcion: data.descripcion,
       });
-      toast.success('Obra creada exitosamente');
+      toast.success('EXPEDIENTE DE OBRA GENERADO');
       navigate('/obras');
     } catch (error) {
-      toast.error('Error al crear la obra');
+      toast.error('ERROR EN EL REGISTRO');
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -85,126 +84,164 @@ export function NuevaObraPage() {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          aria-label="Volver"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-surface-900">Nueva Obra</h1>
-          <p className="text-surface-500">Crea un nuevo proyecto de construcción</p>
+    <div className="min-h-full px-4 py-6 pb-20 space-y-6 max-w-3xl mx-auto">
+      {/* Header Premium Industrial */}
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="w-10 h-10 rounded-xl bg-white border border-surface-200 shadow-sm flex-shrink-0"
+            >
+              <ArrowLeft className="w-5 h-5 text-surface-900" />
+            </Button>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+                Planificación Maestra
+              </span>
+              <h1 className="text-2xl font-black text-surface-900 leading-tight uppercase tracking-tighter">
+                Apertura de Proyecto
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardContent className="space-y-4">
-            {/* Nombre */}
-            <Input
-              label="Nombre de la obra"
-              placeholder="Ej: Casa Pérez - Lo Barnechea"
-              error={errors.nombre?.message}
-              {...register('nombre')}
-              required
-            />
+      {/* Form Industrial */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <Card className="bg-white border-none shadow-sm" padding="lg">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-2 h-6 bg-primary-500 rounded-full" />
+            <h3 className="text-[10px] font-black text-surface-400 uppercase tracking-[0.2em]">Parámetros del Expediente</h3>
+          </div>
 
-            {/* Cliente */}
-            <Input
-              label="Cliente"
-              placeholder="Nombre del cliente o mandante"
-              error={errors.cliente?.message}
-              {...register('cliente')}
-              required
-            />
+          <div className="space-y-5">
+            {/* Nombre */}
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Denominación de Obra</label>
+                <Input
+                placeholder="EJ: CASA PÉREZ - LO BARNECHEA"
+                error={errors.nombre?.message}
+                className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                {...register('nombre')}
+                required
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Cliente */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Mandante / Cliente</label>
+                    <Input
+                    placeholder="INGRESAR TITULAR"
+                    error={errors.cliente?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                    {...register('cliente')}
+                    required
+                    />
+                </div>
+
+                {/* Teléfono */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Contacto Directo</label>
+                    <Input
+                    placeholder="+56 9 XXXX XXXX"
+                    type="tel"
+                    error={errors.telefono?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('telefono')}
+                    />
+                </div>
+            </div>
 
             {/* Dirección */}
-            <Input
-              label="Dirección"
-              placeholder="Dirección completa de la obra"
-              error={errors.direccion?.message}
-              {...register('direccion')}
-              required
-            />
-
-            {/* Teléfono */}
-            <Input
-              label="Teléfono de contacto"
-              placeholder="+56 9 1234 5678"
-              type="tel"
-              error={errors.telefono?.message}
-              {...register('telefono')}
-            />
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Ubicación Geográfica</label>
+                <Input
+                placeholder="DIRECCIÓN COMPLETA DE LA FAENA"
+                error={errors.direccion?.message}
+                className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                {...register('direccion')}
+                required
+                />
+            </div>
 
             {/* Fechas */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Fecha de inicio"
-                type="date"
-                error={errors.fechaInicio?.message}
-                {...register('fechaInicio')}
-                required
-              />
-              <Input
-                label="Fecha estimada de término"
-                type="date"
-                error={errors.fechaEstimadaFin?.message}
-                {...register('fechaEstimadaFin')}
-              />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Arribo a Terreno</label>
+                <Input
+                    type="date"
+                    error={errors.fechaInicio?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('fechaInicio')}
+                    required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Entrega Estimada</label>
+                <Input
+                    type="date"
+                    error={errors.fechaEstimadaFin?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('fechaEstimadaFin')}
+                />
+              </div>
             </div>
 
             {/* Estado y Presupuesto */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select
-                label="Estado"
-                options={estadoOptions}
-                error={errors.estado?.message}
-                {...register('estado')}
-                required
-              />
-              <Input
-                label="Presupuesto (CLP)"
-                type="number"
-                placeholder="0"
-                error={errors.presupuesto?.message}
-                {...register('presupuesto')}
-              />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Fase Operativa Inicial</label>
+                <Select
+                    options={estadoOptions}
+                    error={errors.estado?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-[10px] uppercase"
+                    {...register('estado')}
+                    required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Presupuesto Proyectado (CLP)</label>
+                <Input
+                    type="number"
+                    placeholder="0"
+                    error={errors.presupuesto?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('presupuesto')}
+                />
+              </div>
             </div>
 
             {/* Descripción */}
-            <Textarea
-              label="Descripción"
-              placeholder="Descripción general del proyecto..."
-              rows={4}
-              error={errors.descripcion?.message}
-              {...register('descripcion')}
-            />
-          </CardContent>
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Memoria Descriptiva del Proyecto</label>
+                <Textarea
+                placeholder="DETALLES TÉCNICOS Y ALCANCE DE LOS TRABAJOS..."
+                rows={4}
+                error={errors.descripcion?.message}
+                className="bg-surface-50 border-surface-100 font-bold text-xs uppercase focus:ring-2 focus:ring-primary-500/20"
+                {...register('descripcion')}
+                />
+            </div>
+          </div>
         </Card>
 
-        {/* Actions */}
-        <div className="flex items-center justify-end gap-3 mt-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(-1)}
-            disabled={isSubmitting}
-          >
-            Cancelar
-          </Button>
-          <Button
+        {/* Tactical Submit Industrial */}
+        <div className="pt-4">
+            <Button
             type="submit"
             isLoading={isSubmitting}
-            leftIcon={isSubmitting ? undefined : <Save className="w-4 h-4" />}
-          >
-            {isSubmitting ? 'Guardando...' : 'Guardar Obra'}
-          </Button>
+            className="h-16 w-full rounded-[2rem] bg-surface-900 text-white hover:bg-surface-800 font-black text-sm tracking-[0.2em] uppercase shadow-2xl transition-all active:scale-[0.98]"
+            leftIcon={isSubmitting ? undefined : <Save className="w-5 h-5 text-primary-400" />}
+            >
+            {isSubmitting ? 'PROCESANDO EXPEDIENTE...' : 'CONFIRMAR APERTURA DE OBRA'}
+            </Button>
+            <p className="text-[9px] font-bold text-surface-400 uppercase tracking-widest text-center mt-4 px-6 leading-relaxed">
+                AL CONFIRMAR, SE GENERARÁ UN NUEVO EXPEDIENTE DIGITAL Y SE HABILITARÁN LAS HERRAMIENTAS DE GESTIÓN LOGÍSTICA PARA ESTE PROYECTO.
+            </p>
         </div>
       </form>
     </div>

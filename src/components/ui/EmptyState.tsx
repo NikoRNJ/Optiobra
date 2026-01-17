@@ -17,6 +17,7 @@ export interface EmptyStateProps {
     icon?: ReactNode;
   };
   variant?: 'default' | 'compact' | 'card';
+  className?: string;
 }
 
 export function EmptyState({
@@ -25,6 +26,7 @@ export function EmptyState({
   description,
   action,
   variant = 'default',
+  className = '',
 }: EmptyStateProps) {
   if (variant === 'compact') {
     return (
@@ -74,7 +76,7 @@ export function EmptyState({
 
   // Default variant
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center animate-fade-in-up">
+    <div className={`flex flex-col items-center justify-center py-16 px-6 text-center animate-fade-in-up ${className}`}>
       {/* Icon with decorative background */}
       <div className="relative mb-6">
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-surface-100 to-surface-50 flex items-center justify-center shadow-sm">

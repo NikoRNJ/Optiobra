@@ -11,7 +11,6 @@ import { z } from 'zod';
 import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { 
   Card, 
-  CardContent,
   Button, 
   Input, 
   Select,
@@ -73,7 +72,7 @@ export function NuevoTrabajadorPage() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('La imagen no debe superar los 5MB');
+        toast.error('Límite de 5MB excedido');
         return;
       }
       
@@ -94,7 +93,7 @@ export function NuevoTrabajadorPage() {
 
   const onSubmit = async (data: TrabajadorFormData) => {
     if (!obraId) {
-      toast.error('Error: No se encontró la obra');
+      toast.error('ID DE OBRA NO DETECTADO');
       return;
     }
 
@@ -102,10 +101,10 @@ export function NuevoTrabajadorPage() {
     try {
       await crearTrabajador({
         obraId,
-        nombreCompleto: data.nombreCompleto,
+        nombreCompleto: data.nombreCompleto.toUpperCase(),
         rut: data.rut,
         labor: data.labor as LaborTrabajador,
-        laborPersonalizada: data.labor === 'otro' ? data.laborPersonalizada : undefined,
+        laborPersonalizada: data.labor === 'otro' ? data.laborPersonalizada?.toUpperCase() : undefined,
         fechaIngreso: data.fechaIngreso,
         fechaSalida: data.fechaSalida || undefined,
         estado: 'activo' as EstadoTrabajador,
@@ -114,10 +113,10 @@ export function NuevoTrabajadorPage() {
         contactoEmergencia: data.contactoEmergencia,
         observaciones: data.observaciones,
       });
-      toast.success('Trabajador agregado exitosamente');
+      toast.success('PERSONAL REGISTRADO CORRECTAMENTE');
       navigate(`/obras/${obraId}`);
     } catch (error) {
-      toast.error('Error al agregar trabajador');
+      toast.error('ERROR EN EL REGISTRO DE PERSONAL');
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -125,47 +124,62 @@ export function NuevoTrabajadorPage() {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          aria-label="Volver"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-surface-900">Nuevo Trabajador</h1>
-          <p className="text-surface-500">Agrega un trabajador a la obra</p>
+    <div className="min-h-full px-4 py-6 pb-20 space-y-6 max-w-3xl mx-auto">
+      {/* Header Premium Industrial */}
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="w-10 h-10 rounded-xl bg-white border border-surface-200 shadow-sm flex-shrink-0"
+            >
+              <ArrowLeft className="w-5 h-5 text-surface-900" />
+            </Button>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.2em] mb-1 block">
+                Gestión de Capital Humano
+              </span>
+              <h1 className="text-2xl font-black text-surface-900 leading-tight uppercase tracking-tighter">
+                Alta de Personal
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardContent className="space-y-4">
+      {/* Form Industrial */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <Card className="bg-white border-none shadow-sm" padding="lg">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-2 h-6 bg-purple-500 rounded-full" />
+            <h3 className="text-[10px] font-black text-surface-400 uppercase tracking-[0.2em]">Ficha Técnica del Operador</h3>
+          </div>
+
+          <div className="space-y-6">
             {/* Foto del contrato */}
-            <div>
-              <label className="block text-sm font-medium text-surface-700 mb-2">
-                Foto del contrato (opcional)
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">
+                Documentación Contractual (Digital)
               </label>
               
               {fotoContrato ? (
-                <div className="relative w-full max-w-xs">
+                <div className="relative w-full aspect-video sm:aspect-[21/9] bg-surface-50 rounded-2xl overflow-hidden border-2 border-surface-100 group">
                   <img
                     src={fotoContrato}
                     alt="Foto del contrato"
-                    className="w-full h-48 object-cover rounded-lg border border-surface-200"
+                    className="w-full h-full object-cover"
                   />
-                  <button
-                    type="button"
-                    onClick={removeFoto}
-                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="absolute inset-0 bg-surface-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={removeFoto}
+                      className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-xl transition-transform active:scale-90"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex gap-2">
@@ -179,123 +193,142 @@ export function NuevoTrabajadorPage() {
                   />
                   <label
                     htmlFor="foto-contrato"
-                    className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-surface-300 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-colors"
+                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-surface-100 rounded-2xl cursor-pointer hover:border-purple-500 hover:bg-purple-50/50 transition-all group"
                   >
-                    <Upload className="w-5 h-5 text-surface-400" />
-                    <span className="text-sm text-surface-600">
-                      Subir imagen
+                    <Upload className="w-8 h-8 text-surface-300 group-hover:text-purple-500 transition-colors mb-2" />
+                    <span className="text-[10px] font-black text-surface-400 uppercase tracking-widest">
+                      Vincular Captura de Contrato
                     </span>
                   </label>
                 </div>
               )}
-              <p className="text-xs text-surface-500 mt-1">
-                Máximo 5MB. Formatos: JPG, PNG
-              </p>
             </div>
 
             {/* Nombre completo */}
-            <Input
-              label="Nombre completo"
-              placeholder="Ej: Juan Pérez González"
-              error={errors.nombreCompleto?.message}
-              {...register('nombreCompleto')}
-              required
-            />
-
-            {/* RUT */}
-            <Input
-              label="RUT"
-              placeholder="12.345.678-9"
-              error={errors.rut?.message}
-              {...register('rut')}
-              hint="Formato: 12.345.678-9"
-            />
-
-            {/* Labor */}
-            <Select
-              label="Labor"
-              options={laborOptions}
-              placeholder="Selecciona una labor"
-              error={errors.labor?.message}
-              {...register('labor')}
-              required
-            />
-
-            {/* Labor personalizada (si selecciona "otro") */}
-            {selectedLabor === 'otro' && (
-              <Input
-                label="Especificar labor"
-                placeholder="Describe la labor"
-                error={errors.laborPersonalizada?.message}
-                {...register('laborPersonalizada')}
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Nombres y Apellidos</label>
+                <Input
+                placeholder="EJ: JUAN IGNACIO PÉREZ GÓMEZ"
+                error={errors.nombreCompleto?.message}
+                className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                {...register('nombreCompleto')}
                 required
-              />
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* RUT */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Identificación (RUT)</label>
+                    <Input
+                    placeholder="12.345.678-K"
+                    error={errors.rut?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('rut')}
+                    />
+                </div>
+
+                {/* Labores */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Especialidad Operativa</label>
+                    <Select
+                    options={laborOptions}
+                    error={errors.labor?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-[10px] uppercase"
+                    {...register('labor')}
+                    required
+                    />
+                </div>
+            </div>
+
+            {selectedLabor === 'otro' && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Especificar Especialidad</label>
+                <Input
+                  placeholder="EJ: TOPÓGRAFO / ELECTROMECÁNICO"
+                  error={errors.laborPersonalizada?.message}
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                  {...register('laborPersonalizada')}
+                  required
+                />
+              </div>
             )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Teléfono */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Teléfono Móvil</label>
+                    <Input
+                    placeholder="+56 9 XXXX XXXX"
+                    type="tel"
+                    error={errors.telefono?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('telefono')}
+                    />
+                </div>
+
+                {/* Contacto Emergencia */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Contacto de Emergencia</label>
+                    <Input
+                    placeholder="NOMBRE / TELÉFONO"
+                    error={errors.contactoEmergencia?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                    {...register('contactoEmergencia')}
+                    />
+                </div>
+            </div>
 
             {/* Fechas */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Fecha de ingreso"
-                type="date"
-                error={errors.fechaIngreso?.message}
-                {...register('fechaIngreso')}
-                required
-              />
-              <Input
-                label="Fecha de salida (opcional)"
-                type="date"
-                error={errors.fechaSalida?.message}
-                {...register('fechaSalida')}
-                hint="Dejar vacío si es indefinido"
-              />
-            </div>
-
-            {/* Teléfonos */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Teléfono"
-                type="tel"
-                placeholder="+56 9 1234 5678"
-                error={errors.telefono?.message}
-                {...register('telefono')}
-              />
-              <Input
-                label="Contacto de emergencia"
-                type="tel"
-                placeholder="+56 9 1234 5678"
-                error={errors.contactoEmergencia?.message}
-                {...register('contactoEmergencia')}
-              />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Inicio de Actividades</label>
+                <Input
+                    type="date"
+                    error={errors.fechaIngreso?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                    {...register('fechaIngreso')}
+                    required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Cese de Actividades (Opcional)</label>
+                <Input
+                    type="date"
+                    error={errors.fechaSalida?.message}
+                    className="h-12 border-surface-100 bg-surface-50 font-black text-xs text-surface-400"
+                    {...register('fechaSalida')}
+                />
+              </div>
             </div>
 
             {/* Observaciones */}
-            <Textarea
-              label="Observaciones"
-              placeholder="Notas adicionales sobre el trabajador..."
-              rows={3}
-              error={errors.observaciones?.message}
-              {...register('observaciones')}
-            />
-          </CardContent>
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Antecedentes Adicionales / Notas</label>
+                <Textarea
+                placeholder="REQUERIMIENTOS ESPECIALES, CERTIFICACIONES, ETC..."
+                rows={3}
+                error={errors.observaciones?.message}
+                className="bg-surface-50 border-surface-100 font-bold text-xs uppercase focus:ring-2 focus:ring-purple-500/20"
+                {...register('observaciones')}
+                />
+            </div>
+          </div>
         </Card>
 
-        {/* Actions */}
-        <div className="flex items-center justify-end gap-3 mt-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(-1)}
-            disabled={isSubmitting}
-          >
-            Cancelar
-          </Button>
-          <Button
+        {/* Tactical Submit */}
+        <div className="pt-4">
+            <Button
             type="submit"
             isLoading={isSubmitting}
-            leftIcon={isSubmitting ? undefined : <Save className="w-4 h-4" />}
-          >
-            {isSubmitting ? 'Guardando...' : 'Guardar Trabajador'}
-          </Button>
+            className="h-16 w-full rounded-[2rem] bg-surface-900 text-white hover:bg-surface-800 font-black text-sm tracking-[0.2em] uppercase shadow-2xl transition-all active:scale-[0.98]"
+            leftIcon={isSubmitting ? undefined : <Save className="w-5 h-5 text-purple-400" />}
+            >
+            {isSubmitting ? 'REGISTRANDO...' : 'REGISTRAR TRABAJADOR'}
+            </Button>
+            <p className="text-[9px] font-bold text-surface-400 uppercase tracking-widest text-center mt-4 px-6 leading-relaxed">
+                AL REGISTRAR, EL TRABAJADOR SERÁ VINCULADO AL PROYECTO ACTUAL Y SE INICIARÁ SU CONTROL DE ASISTENCIA Y RENDIMIENTO OPERATIVO.
+            </p>
         </div>
       </form>
     </div>

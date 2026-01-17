@@ -13,12 +13,10 @@ import {
   Calendar,
   DollarSign,
   Package,
-  ChevronRight,
   TrendingUp
 } from 'lucide-react';
 import { 
   Card, 
-  CardContent,
   Button, 
   Select,
   Badge,
@@ -90,216 +88,199 @@ export function ComprasPage() {
   const comprasEntregadas = compras.filter(c => c.estado === 'entregada').length;
 
   return (
-    <div className="p-4 lg:p-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-surface-900 flex items-center gap-2">
-            <ShoppingCart className="w-7 h-7 text-primary-500" />
-            Compras
+    <div className="p-4 lg:p-6 space-y-6">
+      {/* Header Premium Industrial */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 pb-2">
+        <div className="min-w-0">
+          <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+             Logística y Suministros
+          </span>
+          <h1 className="text-3xl font-black text-surface-900 leading-none truncate">
+            Historial de Compras
           </h1>
-          <p className="text-surface-500 mt-1">
-            Historial de compras de materiales
-          </p>
         </div>
-        <Button onClick={() => navigate('/compras/nueva')}>
+        <Button 
+          onClick={() => navigate('/compras/nueva')}
+          className="rounded-2xl font-black text-xs uppercase tracking-widest px-6 h-12 shadow-lg shadow-primary-200"
+        >
           <Plus className="w-4 h-4 mr-2" />
-          Nueva Compra
+          Nueva Adquisición
         </Button>
       </div>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="bg-green-50 border-green-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-lg font-bold font-numeric text-green-700">
-                  {formatCurrency(totalGastado)}
-                </p>
-                <p className="text-sm text-green-600">Total Gastado</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Estadísticas de Compras */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-3xl border border-surface-100 shadow-sm relative overflow-hidden group">
+           <div className="relative z-10">
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">Inversión Total</p>
+              <p className="text-xl font-black font-numeric text-success-600">
+                {formatCurrency(totalGastado)}
+              </p>
+           </div>
+           <DollarSign className="absolute -right-2 -bottom-2 w-16 h-16 text-success-50 opacity-50 group-hover:scale-110 transition-transform" />
+        </div>
 
-        <Card className="bg-yellow-50 border-yellow-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <Package className="w-5 h-5 text-yellow-600" />
+        <div className="bg-white p-4 rounded-3xl border border-surface-100 shadow-sm relative overflow-hidden group">
+           <div className="relative z-10">
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">Pendientes</p>
+              <div className="flex items-end gap-1">
+                 <p className="text-2xl font-black text-accent-500 leading-none">{comprasPendientes}</p>
+                 <span className="text-[10px] font-bold text-surface-400 uppercase pb-0.5">Ordenes</span>
               </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-yellow-700">
-                  {comprasPendientes}
-                </p>
-                <p className="text-sm text-yellow-600">Pendientes</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+           </div>
+           <Package className="absolute -right-2 -bottom-2 w-16 h-16 text-accent-50 opacity-50 group-hover:scale-110 transition-transform" />
+        </div>
 
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
+        <div className="bg-white p-4 rounded-3xl border border-surface-100 shadow-sm relative overflow-hidden group">
+           <div className="relative z-10">
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">Recibidas</p>
+              <div className="flex items-end gap-1">
+                 <p className="text-2xl font-black text-primary-600 leading-none">{comprasEntregadas}</p>
+                 <span className="text-[10px] font-bold text-surface-400 uppercase pb-0.5">Items</span>
               </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-blue-700">
-                  {comprasEntregadas}
-                </p>
-                <p className="text-sm text-blue-600">Entregadas</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+           </div>
+           <TrendingUp className="absolute -right-2 -bottom-2 w-16 h-16 text-primary-50 opacity-50 group-hover:scale-110 transition-transform" />
+        </div>
 
-        <Card className="bg-surface-50 border-surface-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-surface-100 flex items-center justify-center">
-                <ShoppingCart className="w-5 h-5 text-surface-600" />
+        <div className="bg-white p-4 rounded-3xl border border-surface-100 shadow-sm relative overflow-hidden group">
+           <div className="relative z-10">
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">Total Gestión</p>
+              <div className="flex items-end gap-1">
+                 <p className="text-2xl font-black text-surface-900 leading-none">{compras.length}</p>
+                 <span className="text-[10px] font-bold text-surface-400 uppercase pb-0.5">Tickets</span>
               </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-surface-700">
-                  {compras.length}
-                </p>
-                <p className="text-sm text-surface-600">Total Compras</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+           </div>
+           <ShoppingCart className="absolute -right-2 -bottom-2 w-16 h-16 text-surface-50 opacity-50 group-hover:scale-110 transition-transform" />
+        </div>
       </div>
 
-      {/* Filtros */}
-      <Card className="mb-6">
-        <CardContent className="py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" />
-              <input
-                type="text"
-                placeholder="Buscar por proveedor o material..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-            <Select
-              options={[
-                { value: '', label: 'Todas las obras' },
-                ...obras.map(o => ({ value: o.id!, label: o.nombre }))
-              ]}
-              value={filtroObra}
-              onChange={(e) => setFiltroObra(e.target.value)}
-            />
-            <Select
-              options={[
-                { value: '', label: 'Todos los estados' },
-                { value: 'pendiente', label: 'Pendiente' },
-                { value: 'pagada', label: 'Pagada' },
-                { value: 'entregada', label: 'Entregada' },
-                { value: 'cancelada', label: 'Cancelada' },
-              ]}
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
+      {/* Filtros Avanzados */}
+      <div className="bg-white p-2 rounded-3xl border border-surface-100 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-300" />
+            <input
+              type="text"
+              placeholder="Buscar proveedor o insumo..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 bg-surface-50 border-none rounded-2xl text-xs font-bold text-surface-700 placeholder:text-surface-300 focus:ring-2 focus:ring-primary-500 transition-all"
             />
           </div>
-        </CardContent>
-      </Card>
+          <Select
+            options={[
+              { value: '', label: 'Seleccionar Obra' },
+              ...obras.map(o => ({ value: o.id!, label: o.nombre }))
+            ]}
+            value={filtroObra}
+            onChange={(e) => setFiltroObra(e.target.value)}
+            className="border-none bg-surface-50 rounded-2xl"
+          />
+          <Select
+            options={[
+              { value: '', label: 'Estado de Orden' },
+              { value: 'pendiente', label: 'Pendiente' },
+              { value: 'pagada', label: 'Pagada' },
+              { value: 'entregada', label: 'Entregada' },
+              { value: 'cancelada', label: 'Cancelada' },
+            ]}
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value)}
+            className="border-none bg-surface-50 rounded-2xl"
+          />
+        </div>
+      </div>
 
-      {/* Lista de compras */}
+      {/* Listado de Operaciones */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full" />
+        <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-dashed border-surface-200">
+          <div className="animate-spin w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full mb-4" />
+          <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest">Sincronizando inventario...</p>
         </div>
       ) : comprasFiltradas.length === 0 ? (
         <EmptyState
-          icon={<ShoppingCart className="w-12 h-12" />}
-          title="No hay compras"
+          icon={<ShoppingCart className="w-16 h-16 text-surface-100" />}
+          title="SISTEMA VACÍO"
           description={busqueda || filtroObra || filtroEstado
-            ? "No se encontraron compras con los filtros aplicados"
-            : "Comienza registrando tus primeras compras"
+            ? "No hay registros que coincidan con los parámetros de búsqueda."
+            : "No se han registrado operaciones de compra en el sistema."
           }
           action={{
-            label: 'Nueva Compra',
+            label: 'NUEVA ORDEN',
             onClick: () => navigate('/compras/nueva'),
           }}
+          className="bg-white border-2 border-dashed border-surface-200 rounded-3xl py-20"
         />
       ) : (
-        <div className="space-y-4">
-          {comprasFiltradas.map((compra) => (
-            <Card 
-              key={compra.id}
-              className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate(`/compras/${compra.id}`)}
-            >
-              <CardContent className="py-4">
-                <div className="flex items-center gap-4">
-                  {/* Icono */}
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0">
-                    <ShoppingCart className="w-6 h-6 text-primary-600" />
-                  </div>
-
-                  {/* Info principal */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h4 className="font-semibold text-surface-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {comprasFiltradas.map((compra) => {
+            const statusColors: Record<string, string> = {
+              'pendiente': 'border-l-accent-500',
+              'pagada': 'border-l-primary-500',
+              'entregada': 'border-l-success-500',
+              'cancelada': 'border-l-error-500',
+            };
+            
+            return (
+              <Card 
+                key={compra.id}
+                className={`hover:border-primary-300 transition-all cursor-pointer border-l-4 ${statusColors[compra.estado] || 'border-l-surface-300'} overflow-hidden`}
+                padding="none"
+                onClick={() => navigate(`/compras/${compra.id}`)}
+              >
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center border border-primary-100">
+                        <ShoppingCart className="w-5 h-5 text-primary-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-black text-surface-900 truncate uppercase tracking-tight text-sm">
                           {compra.proveedor}
                         </h4>
-                        <p className="text-sm text-surface-500 flex items-center gap-1">
-                          <Building2 className="w-3.5 h-3.5" />
+                        <p className="text-[10px] font-bold text-surface-400 flex items-center gap-1 uppercase tracking-tighter">
+                          <Building2 className="w-3 h-3 text-primary-400" />
                           {getObraNombre(compra.obraId)}
                         </p>
                       </div>
-                      <Badge>
-                        {ESTADO_COMPRA_LABELS[compra.estado]}
-                      </Badge>
                     </div>
-
-                    <div className="flex items-center gap-4 mt-2 text-sm text-surface-500">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {formatDate(compra.fecha)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Package className="w-3.5 h-3.5" />
-                        {compra.items.length} items
-                      </span>
-                    </div>
-
-                    {/* Items preview */}
-                    <div className="mt-2 text-sm text-surface-600">
-                      {compra.items.slice(0, 2).map((item, idx) => (
-                        <span key={idx}>
-                          {item.cantidad} {item.unidad} {item.descripcion}
-                          {idx < Math.min(compra.items.length - 1, 1) && ', '}
-                        </span>
-                      ))}
-                      {compra.items.length > 2 && (
-                        <span className="text-surface-400">
-                          {' '}y {compra.items.length - 2} más...
-                        </span>
-                      )}
-                    </div>
+                    <Badge className="border-none text-[9px] font-black uppercase tracking-widest bg-surface-100 text-surface-600">
+                      {ESTADO_COMPRA_LABELS[compra.estado]}
+                    </Badge>
                   </div>
 
-                  {/* Total */}
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-lg font-bold font-numeric text-surface-900">
-                      {formatCurrency(compra.total)}
-                    </p>
-                    <ChevronRight className="w-5 h-5 text-surface-300 ml-auto" />
+                  <div className="space-y-3">
+                     <div className="flex flex-wrap gap-2">
+                        {compra.items.slice(0, 3).map((item, idx) => (
+                          <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded-md bg-surface-50 border border-surface-100 text-[9px] font-bold text-surface-600">
+                            {item.cantidad} {item.unidad} {item.descripcion}
+                          </span>
+                        ))}
+                        {compra.items.length > 3 && (
+                          <span className="text-[9px] font-black text-primary-400 uppercase tracking-tighter pt-0.5">
+                            + {compra.items.length - 3} MÁS
+                          </span>
+                        )}
+                     </div>
+
+                     <div className="flex items-center justify-between pt-3 border-t border-surface-50">
+                        <div className="flex items-center gap-3">
+                           <div className="flex items-center gap-1 text-[10px] font-black text-surface-400 uppercase tracking-widest">
+                              <Calendar className="w-3.5 h-3.5 text-primary-500" />
+                              {formatDate(compra.fecha)}
+                           </div>
+                        </div>
+                        <div className="text-right">
+                           <p className="text-lg font-black font-numeric text-surface-900 leading-none">
+                              {formatCurrency(compra.total)}
+                           </p>
+                        </div>
+                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>

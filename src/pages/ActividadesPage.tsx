@@ -16,12 +16,10 @@ import {
   Search,
   Building2,
   Image,
-  Video,
   ChevronRight
 } from 'lucide-react';
 import { 
   Card, 
-  CardContent,
   Button, 
   Select,
   Badge,
@@ -114,132 +112,79 @@ export function ActividadesPage() {
   };
 
   return (
-    <div className="p-4 lg:p-6">
+    <div className="p-4 lg:p-6 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-surface-900 flex items-center gap-2">
-            <ClipboardList className="w-7 h-7 text-primary-500" />
-            Actividades
-          </h1>
-          <p className="text-surface-500 mt-1">
-            Gestiona las actividades de tus obras
-          </p>
+          <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+            Bitácora de Campo
+          </span>
+          <h1 className="text-2xl font-black text-surface-900 leading-none">Actividades</h1>
         </div>
-        <Button onClick={() => navigate('/actividades/nueva')}>
+        <Button 
+          size="sm"
+          className="rounded-full px-5 h-10 shadow-lg shadow-primary-200"
+          onClick={() => navigate('/actividades/nueva')}
+        >
           <Plus className="w-4 h-4 mr-2" />
-          Nueva Actividad
+          Nueva
         </Button>
       </div>
 
-      {/* Filtros */}
-      <Card className="mb-6">
-        <CardContent className="py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" />
-              <input
-                type="text"
-                placeholder="Buscar actividades..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-surface-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-            <Select
-              options={[
-                { value: '', label: 'Todas las obras' },
-                ...obras.map(o => ({ value: o.id!, label: o.nombre }))
-              ]}
-              value={filtroObra}
-              onChange={(e) => setFiltroObra(e.target.value)}
-            />
-            <Select
-              options={[
-                { value: '', label: 'Todos los estados' },
-                { value: 'pendiente', label: 'Pendiente' },
-                { value: 'en_progreso', label: 'En Progreso' },
-                { value: 'completada', label: 'Completada' },
-                { value: 'cancelada', label: 'Cancelada' },
-              ]}
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
-            />
+      {/* Filtros Modernos */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-2 rounded-2xl border border-surface-100 shadow-sm">
+        <div className="relative group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 group-focus-within:text-primary-500 transition-colors" />
+          <input
+            type="text"
+            placeholder="Buscar en registros..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-surface-50 border-none rounded-xl text-sm focus:ring-0 outline-none"
+          />
+        </div>
+        <Select
+          className="border-none bg-surface-50 rounded-xl"
+          options={[
+            { value: '', label: 'Cualquier Obra' },
+            ...obras.map(o => ({ value: o.id!, label: o.nombre }))
+          ]}
+          value={filtroObra}
+          onChange={(e) => setFiltroObra(e.target.value)}
+        />
+        <Select
+          className="border-none bg-surface-50 rounded-xl"
+          options={[
+            { value: '', label: 'Cualquier Estado' },
+            { value: 'pendiente', label: 'Pendiente' },
+            { value: 'en_progreso', label: 'En Progreso' },
+            { value: 'completada', label: 'Completada' },
+            { value: 'cancelada', label: 'Cancelada' },
+          ]}
+          value={filtroEstado}
+          onChange={(e) => setFiltroEstado(e.target.value)}
+        />
+      </div>
+
+      {/* Estadísticas Compactas */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Pendientes', count: actividades.filter(a => a.estado === 'pendiente').length, color: 'text-warning-600 bg-warning-50' },
+          { label: 'En Proceso', count: actividades.filter(a => a.estado === 'en_progreso').length, color: 'text-info-600 bg-info-50' },
+          { label: 'Completas', count: actividades.filter(a => a.estado === 'completada').length, color: 'text-success-600 bg-success-50' },
+          { label: 'Total', count: actividades.length, color: 'text-surface-600 bg-surface-50' }
+        ].map((stat, i) => (
+          <div key={i} className="bg-white p-3 rounded-2xl border border-surface-100 shadow-sm flex items-center justify-between">
+            <span className="text-[10px] font-black text-surface-400 uppercase tracking-widest">{stat.label}</span>
+            <span className={`px-2 py-0.5 rounded-lg font-bold text-xs ${stat.color}`}>{stat.count}</span>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Estadísticas rápidas */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <Card className="bg-yellow-50 border-yellow-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <Circle className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-yellow-700">
-                  {actividades.filter(a => a.estado === 'pendiente').length}
-                </p>
-                <p className="text-sm text-yellow-600">Pendientes</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-blue-700">
-                  {actividades.filter(a => a.estado === 'en_progreso').length}
-                </p>
-                <p className="text-sm text-blue-600">En Progreso</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-green-50 border-green-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-green-700">
-                  {actividades.filter(a => a.estado === 'completada').length}
-                </p>
-                <p className="text-sm text-green-600">Completadas</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-surface-50 border-surface-200">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-surface-100 flex items-center justify-center">
-                <ClipboardList className="w-5 h-5 text-surface-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold font-numeric text-surface-700">
-                  {actividades.length}
-                </p>
-                <p className="text-sm text-surface-600">Total</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        ))}
       </div>
 
       {/* Lista de actividades por fecha */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full" />
+          <div className="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full" />
         </div>
       ) : actividadesFiltradas.length === 0 ? (
         <EmptyState
@@ -255,82 +200,86 @@ export function ActividadesPage() {
           }}
         />
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-10">
           {Object.entries(actividadesPorFecha).map(([fecha, acts]) => (
             <div key={fecha}>
-              <div className="flex items-center gap-2 mb-3">
-                <Calendar className="w-4 h-4 text-surface-400" />
-                <h3 className="text-sm font-medium text-surface-500">{fecha}</h3>
-                <span className="text-xs text-surface-400">({acts.length})</span>
+              <div className="flex items-center gap-2 mb-4 bg-surface-50 p-2 rounded-lg w-fit">
+                <Calendar className="w-3.5 h-3.5 text-primary-500" />
+                <h3 className="text-[10px] font-black italic text-surface-500 uppercase tracking-widest leading-none">{fecha}</h3>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {acts.map((actividad) => (
                   <Card 
                     key={actividad.id}
-                    className="hover:shadow-md transition-shadow cursor-pointer"
+                    className="border-none shadow-sm hover:shadow-md transition-all group cursor-pointer overflow-hidden p-0"
                     onClick={() => navigate(`/actividades/${actividad.id}`)}
                   >
-                    <CardContent className="py-4">
-                      <div className="flex items-start gap-4">
-                        {/* Estado icon */}
-                        <div className="pt-1">
-                          {getEstadoIcon(actividad.estado)}
-                        </div>
-
-                        {/* Contenido */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <h4 className="font-semibold text-surface-900">
-                                {actividad.titulo}
-                              </h4>
-                              <p className="text-sm text-surface-500 flex items-center gap-1 mt-1">
-                                <Building2 className="w-3.5 h-3.5" />
-                                {getObraNombre(actividad.obraId)}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge 
-                                size="sm"
-                              >
-                                {ESTADO_ACTIVIDAD_LABELS[actividad.estado]}
-                              </Badge>
-                              {actividad.prioridad && (
-                                <Badge 
-                                  variant={prioridadConfig[actividad.prioridad].color}
-                                  size="sm"
-                                >
-                                  {prioridadConfig[actividad.prioridad].label}
-                                </Badge>
-                              )}
-                            </div>
+                    <div className="flex items-stretch">
+                      <div className="w-1 bg-primary-500 group-hover:w-2 transition-all" />
+                      <div className="p-4 flex-1">
+                        <div className="flex items-start gap-4">
+                          <div className="pt-1 flex-shrink-0">
+                            {getEstadoIcon(actividad.estado)}
                           </div>
 
-                          {actividad.descripcion && (
-                            <p className="text-sm text-surface-600 mt-2 line-clamp-2">
-                              {actividad.descripcion}
-                            </p>
-                          )}
-
-                          {/* Multimedia indicators */}
-                          {actividad.multimedia && actividad.multimedia.length > 0 && (
-                            <div className="flex items-center gap-3 mt-3 text-xs text-surface-400">
-                              <span className="flex items-center gap-1">
-                                <Image className="w-3.5 h-3.5" />
-                                {actividad.multimedia.filter(m => m.tipo === 'imagen').length} fotos
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Video className="w-3.5 h-3.5" />
-                                {actividad.multimedia.filter(m => m.tipo === 'video').length} videos
-                              </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-4 mb-2">
+                              <div className="min-w-0">
+                                <h4 className="font-bold text-surface-900 group-hover:text-primary-600 transition-colors truncate">
+                                  {actividad.titulo}
+                                </h4>
+                                <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mt-0.5 flex items-center gap-1.5">
+                                  <Building2 className="w-3 h-3 text-primary-500/50" />
+                                  {getObraNombre(actividad.obraId)}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <Badge className="text-[9px] font-black uppercase border-none px-1.5 py-0.5 rounded-md">
+                                  {ESTADO_ACTIVIDAD_LABELS[actividad.estado]}
+                                </Badge>
+                                {actividad.prioridad && (
+                                  <Badge 
+                                    variant={prioridadConfig[actividad.prioridad].color}
+                                    className="text-[9px] font-black uppercase border-none px-1.5 py-0.5 rounded-md"
+                                  >
+                                    {prioridadConfig[actividad.prioridad].label}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
 
-                        <ChevronRight className="w-5 h-5 text-surface-300" />
+                            {actividad.descripcion && (
+                              <p className="text-xs text-surface-500 line-clamp-2 leading-relaxed italic border-l-2 border-surface-100 pl-3 mb-4">
+                                "{actividad.descripcion}"
+                              </p>
+                            )}
+
+                            <div className="flex items-center justify-between pt-3 border-t border-surface-50">
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1.5 text-surface-400">
+                                  <Clock className="w-3.5 h-3.5" />
+                                  <span className="text-[10px] font-bold">14:20</span>
+                                </div>
+                                {actividad.multimedia && actividad.multimedia.length > 0 && (
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-1 w-1 rounded-full bg-surface-200" />
+                                    <span className="flex items-center gap-1 text-[10px] font-bold text-primary-600/70">
+                                      <Image className="w-3 h-3" />
+                                      {actividad.multimedia.length}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1 text-primary-600 font-black text-[10px] uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
+                                Detalles
+                                <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 ))}
               </div>

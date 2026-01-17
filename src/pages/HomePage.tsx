@@ -14,7 +14,6 @@ import {
   Users,
   Package,
   ChevronRight,
-  Clock,
   MapPin,
   Activity
 } from 'lucide-react';
@@ -22,7 +21,7 @@ import { Card, Button, EmptyState } from '@/components/ui';
 import { useObraStore } from '@/stores';
 import { formatDate, ESTADO_OBRA_LABELS } from '@/utils';
 
-// Stat Card Component - Industrial Design
+// Stat Card Component - Refined & Modern
 function StatCard({
   icon: Icon,
   value,
@@ -37,30 +36,30 @@ function StatCard({
   trend?: { value: number; up: boolean };
 }) {
   const colorStyles = {
-    blue: 'bg-primary-600 text-white',
-    green: 'bg-success-600 text-white',
-    orange: 'bg-accent-600 text-white',
-    purple: 'bg-purple-600 text-white',
+    blue: 'text-primary-600 bg-primary-50',
+    green: 'text-success-600 bg-success-50',
+    orange: 'text-accent-600 bg-accent-50',
+    purple: 'text-purple-600 bg-purple-50',
   };
 
   return (
-    <Card className="relative overflow-hidden">
-      <div className="flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-xl ${colorStyles[color]} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-          <Icon className="w-6 h-6" />
+    <Card className="border-none shadow-sm transition-all hover:shadow-md" padding="sm">
+      <div className="flex flex-col gap-2">
+        <div className={`w-10 h-10 rounded-lg ${colorStyles[color]} flex items-center justify-center flex-shrink-0`}>
+          <Icon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-2xl font-black text-surface-900 font-numeric tracking-tight">
+          <p className="text-xl font-bold text-surface-900 tracking-tight">
             {value}
           </p>
-          <p className="text-sm font-medium text-surface-600 truncate">
+          <p className="text-xs font-semibold text-surface-500 uppercase tracking-wider">
             {label}
           </p>
         </div>
         {trend && (
-          <div className={`text-xs font-bold px-2 py-1 rounded-full ${trend.up ? 'bg-success-100 text-success-700' : 'bg-error-100 text-error-700'
+          <div className={`absolute top-3 right-3 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${trend.up ? 'bg-success-100 text-success-700' : 'bg-error-100 text-error-700'
             }`}>
-            {trend.up ? '+' : ''}{trend.value}%
+            {trend.up ? '↑' : '↓'} {trend.value}%
           </div>
         )}
       </div>
@@ -68,48 +67,41 @@ function StatCard({
   );
 }
 
-// Quick Action Button - Industrial
+// Quick Action Button - Modern Tile
 function QuickAction({
   to,
   icon: Icon,
   label,
   description,
-  variant = 'primary'
+  color = 'primary'
 }: {
   to: string;
   icon: React.ElementType;
   label: string;
   description: string;
-  variant?: 'primary' | 'accent';
+  color?: 'primary' | 'accent' | 'success' | 'purple';
 }) {
-  const variantStyles = {
-    primary: 'bg-primary-600 hover:bg-primary-700',
-    accent: 'bg-accent-600 hover:bg-accent-700',
+  const colorMap = {
+    primary: 'bg-primary-500 shadow-primary-200/50',
+    accent: 'bg-accent-500 shadow-accent-200/50',
+    success: 'bg-success-500 shadow-success-200/50',
+    purple: 'bg-purple-500 shadow-purple-200/50',
   };
 
   return (
-    <Link to={to} className="block">
-      <div className={`
-        relative p-5 rounded-xl ${variantStyles[variant]}
-        shadow-lg transform transition-all duration-200
-        active:scale-[0.98] overflow-hidden
-      `}>
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-white text-base">{label}</h3>
-            <p className="text-sm text-white/80 truncate">{description}</p>
-          </div>
-          <ChevronRight className="w-5 h-5 text-white/60 flex-shrink-0" />
+    <Link to={to} className="group">
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-surface-100 h-full transition-all active:scale-95 group-hover:shadow-md">
+        <div className={`w-12 h-12 rounded-xl ${colorMap[color]} flex items-center justify-center mb-3 shadow-lg`}>
+          <Icon className="w-6 h-6 text-white" />
         </div>
+        <h3 className="font-bold text-surface-900 text-sm leading-tight pr-4">{label}</h3>
+        <p className="text-[11px] text-surface-500 mt-1 line-clamp-2">{description}</p>
       </div>
     </Link>
   );
 }
 
-// Obra Card - Professional
+// Obra Card - Professional & Sharp
 function ObraCard({ obra, index }: { obra: import('@/types').Obra; index: number }) {
   const stateColors: Record<string, string> = {
     en_progreso: 'border-l-success-500',
@@ -128,38 +120,39 @@ function ObraCard({ obra, index }: { obra: import('@/types').Obra; index: number
   return (
     <Link
       to={`/obras/${obra.id}`}
-      className={`block animate-fade-in-up stagger-${Math.min(index + 1, 4)}`}
+      className={`block animate-fade-in-up stagger-${Math.min(index + 1, 4)} group`}
     >
       <Card
         hover
-        className={`border-l-4 ${stateColors[obra.estado] || 'border-l-surface-300'}`}
+        className={`border-none shadow-sm group-hover:shadow-md transition-all border-l-4 ${stateColors[obra.estado] || 'border-l-surface-300'}`}
+        padding="md"
       >
-        <div className="flex items-start justify-between gap-4 mb-3">
+        <div className="flex items-start justify-between gap-4 mb-4">
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-surface-900 text-base truncate">
+            <h3 className="font-bold text-surface-900 text-base truncate group-hover:text-primary-600 transition-colors">
               {obra.nombre}
             </h3>
             <div className="flex items-center gap-2 mt-1">
               <MapPin className="w-3.5 h-3.5 text-surface-400 flex-shrink-0" />
-              <span className="text-sm text-surface-600 truncate">{obra.cliente}</span>
+              <span className="text-xs font-medium text-surface-500 truncate">{obra.cliente}</span>
             </div>
           </div>
           <span className={`
-            px-2.5 py-1 text-xs font-bold rounded-lg border flex-shrink-0
+            px-2 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-md border flex-shrink-0
             ${stateBadgeColors[obra.estado] || 'bg-surface-100 text-surface-600 border-surface-200'}
           `}>
             {ESTADO_OBRA_LABELS[obra.estado]}
           </span>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-surface-100">
-          <div className="flex items-center gap-2 text-surface-500">
-            <Clock className="w-4 h-4" />
-            <span className="text-sm font-medium">{formatDate(obra.fechaInicio)}</span>
+        <div className="flex items-center justify-between pt-3 border-t border-surface-50">
+          <div className="flex items-center gap-2 text-surface-400">
+            <CalendarDays className="w-3.5 h-3.5" />
+            <span className="text-xs font-semibold">{formatDate(obra.fechaInicio)}</span>
           </div>
-          <div className="flex items-center gap-1 text-primary-600 font-semibold text-sm">
-            Ver detalles
-            <ChevronRight className="w-4 h-4" />
+          <div className="flex items-center gap-1 text-primary-600 font-bold text-xs">
+            GESTIONAR
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </Card>
@@ -180,81 +173,82 @@ export function HomePage() {
   const totalTrabajadores = 0; // Se carga de forma asíncrona por cada obra
 
   return (
-    <div className="min-h-full px-5 py-4">
+    <div className="min-h-full px-4 pt-2 pb-6 space-y-8">
       {/* Header Section */}
-      <div className="bg-white border border-surface-200 rounded-2xl shadow-card mb-4">
-        <div className="p-5">
-          {/* Welcome & Actions */}
-          <div className="flex items-start justify-between gap-4 mb-6">
-            <div>
-              <p className="text-sm font-semibold text-surface-500 uppercase tracking-wide">
-                Panel de Control
-              </p>
-              <h1 className="text-2xl font-black text-surface-900 mt-1">
-                Supervisión de Obras
-              </h1>
-            </div>
-            <Link to="/obras/nueva">
-              <Button
-                size="md"
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Nueva Obra
-              </Button>
-            </Link>
+      <section>
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+              Dashboard Operativo
+            </span>
+            <h1 className="text-2xl font-black text-surface-900 leading-none">
+              Resumen General
+            </h1>
           </div>
-
-          {/* Stats Grid - 2x2 */}
-          <div className="grid grid-cols-2 gap-4">
-            <StatCard
-              icon={TrendingUp}
-              value={obrasActivas.length}
-              label="Obras Activas"
-              color="green"
-            />
-            <StatCard
-              icon={HardHat}
-              value={obras.length}
-              label="Total Obras"
-              color="blue"
-            />
-            <StatCard
-              icon={Users}
-              value={totalTrabajadores || '—'}
-              label="Trabajadores"
-              color="purple"
-            />
-            <StatCard
-              icon={Package}
-              value="—"
-              label="Materiales"
-              color="orange"
-            />
-          </div>
+          <Link to="/obras/nueva">
+            <Button
+              size="sm"
+              className="rounded-full px-4 h-9 shadow-lg shadow-primary-200"
+              leftIcon={<Plus className="w-4 h-4" />}
+            >
+              Obra
+            </Button>
+          </Link>
         </div>
-      </div>
+
+        {/* Stats Grid - Modern Compacy Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard
+            icon={TrendingUp}
+            value={obrasActivas.length}
+            label="En Curso"
+            color="green"
+          />
+          <StatCard
+            icon={HardHat}
+            value={obras.length}
+            label="Totales"
+            color="blue"
+          />
+          <StatCard
+            icon={Users}
+            value={totalTrabajadores || '0'}
+            label="Personal"
+            color="purple"
+          />
+          <StatCard
+            icon={Package}
+            value="—"
+            label="Insumos"
+            color="orange"
+          />
+        </div>
+      </section>
 
       {/* Main Content */}
-      <div className="space-y-4 mt-4">
-        {/* Quick Actions */}
+      <div className="space-y-8">
+        {/* Quick Actions - Grid of Tiles */}
         <section>
-          <h2 className="text-sm font-bold text-surface-700 uppercase tracking-wide mb-4">
-            Acciones Rápidas
-          </h2>
-          <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+            <h2 className="text-xs font-black text-surface-400 uppercase tracking-widest">
+              Herramientas de Obra
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             <QuickAction
               to="/cubicacion"
               icon={Calculator}
-              label="Calcular Cubicación"
-              description="Materiales según NCh 170"
-              variant="primary"
+              label="Cubicar Material"
+              description="Cálculos NCh 170"
+              color="primary"
             />
             <QuickAction
               to="/actividades/nueva"
               icon={CalendarDays}
-              label="Registrar Actividad"
-              description="Bitácora diaria de obra"
-              variant="accent"
+              label="Nueva Actividad"
+              description="Bitácora de campo"
+              color="accent"
             />
           </div>
         </section>
@@ -262,15 +256,18 @@ export function HomePage() {
         {/* Recent Projects */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-surface-700 uppercase tracking-wide">
-              Obras Recientes
-            </h2>
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
+              <h2 className="text-xs font-black text-surface-400 uppercase tracking-widest">
+                Proyectos Actuales
+              </h2>
+            </div>
             <Link
               to="/obras"
-              className="flex items-center gap-1 text-sm text-primary-600 font-bold hover:text-primary-700 transition-colors"
+              className="text-[10px] font-black text-primary-600 uppercase tracking-widest flex items-center gap-1"
             >
-              Ver todas
-              <ChevronRight className="w-4 h-4" />
+              Panel completo
+              <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
 
@@ -308,17 +305,17 @@ export function HomePage() {
           )}
         </section>
 
-        {/* Info Banner */}
-        <div className="bg-surface-800 rounded-xl p-5 text-white">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Activity className="w-6 h-6" />
+        {/* Info Banner - Refined and Less Intrusive */}
+        <div className="bg-gradient-to-br from-surface-900 via-surface-800 to-surface-900 rounded-2xl p-6 text-white shadow-xl shadow-surface-200/50 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all" />
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-12 h-12 rounded-xl bg-primary-500/20 border border-white/10 flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+              <Activity className="w-6 h-6 text-primary-400" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-base">Normativa NCh 170</h3>
-              <p className="text-sm text-white/70 mt-1 leading-relaxed">
-                Todos los cálculos de cubicación utilizan la normativa chilena oficial
-                para dosificación de hormigones.
+              <h3 className="font-bold text-base tracking-tight">Normativa NCh 170</h3>
+              <p className="text-xs text-white/60 mt-0.5 leading-relaxed font-medium">
+                Cálculos basados en estándares chilenos oficiales.
               </p>
             </div>
           </div>

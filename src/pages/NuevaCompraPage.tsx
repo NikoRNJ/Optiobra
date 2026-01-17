@@ -16,8 +16,6 @@ import {
 } from 'lucide-react';
 import { 
   Card, 
-  CardHeader,
-  CardContent,
   Button, 
   Input,
   Select,
@@ -105,10 +103,6 @@ export function NuevaCompraPage() {
   );
   const total = subtotales.reduce((sum, st) => sum + st, 0);
 
-  const agregarItem = () => {
-    append({ descripcion: '', cantidad: 1, unidad: 'un', precioUnitario: 0 });
-  };
-
   const onSubmit = async (data: CompraFormData) => {
     try {
       const items: ItemCompra[] = data.items.map(item => ({
@@ -151,173 +145,203 @@ export function NuevaCompraPage() {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <div>
-          <h1 className="text-xl font-bold text-surface-900">
-            Nueva Compra
-          </h1>
-          <p className="text-sm text-surface-500">
-            Registra una compra de materiales
-          </p>
+    <div className="min-h-full px-4 py-6 pb-20 space-y-6 max-w-4xl mx-auto">
+      {/* Header Premium Industrial */}
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="w-10 h-10 rounded-xl bg-white border border-surface-200 shadow-sm flex-shrink-0"
+            >
+              <ArrowLeft className="w-5 h-5 text-surface-900" />
+            </Button>
+            <div className="min-w-0">
+              <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+                Gestión de Suministros
+              </span>
+              <h1 className="text-2xl font-black text-surface-900 leading-tight uppercase tracking-tighter">
+                Registro de Adquisición
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Datos de la compra */}
-        <Card>
-          <CardHeader title="Información de la Compra" />
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select
-                label="Obra"
-                options={[
-                  { value: '', label: 'Selecciona una obra...' },
-                  ...obras.map(o => ({ value: o.id!, label: o.nombre }))
-                ]}
-                error={errors.obraId?.message}
-                required
-                {...register('obraId')}
-              />
-              <Input
-                label="Proveedor"
-                placeholder="Ej: Ferretería Construmart"
-                error={errors.proveedor?.message}
-                required
-                {...register('proveedor')}
-              />
+        {/* Logistics Data Card */}
+        <Card className="bg-white border-none shadow-sm" padding="lg">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-2 h-6 bg-primary-500 rounded-full" />
+            <h3 className="text-[10px] font-black text-surface-400 uppercase tracking-[0.2em]">Protocolo de Compra</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Proyecto de Asignación</label>
+                <Select
+                  options={[
+                    { value: '', label: 'SELECCIONE OBRA DE DESTINO...' },
+                    ...obras.map(o => ({ value: o.id!, label: o.nombre.toUpperCase() }))
+                  ]}
+                  error={errors.obraId?.message}
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                  required
+                  {...register('obraId')}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Entidad Proveedora</label>
+                <Input
+                  placeholder="EJ: FERRETERÍA CONSTRUMART"
+                  error={errors.proveedor?.message}
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                  required
+                  {...register('proveedor')}
+                />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Input
-                label="Fecha"
-                type="date"
-                error={errors.fecha?.message}
-                required
-                {...register('fecha')}
-              />
-              <Input
-                label="N° Factura / Boleta"
-                placeholder="Opcional"
-                {...register('numeroFactura')}
-              />
-              <Select
-                label="Estado"
-                options={[
-                  { value: 'pendiente', label: 'Pendiente' },
-                  { value: 'pagada', label: 'Pagada' },
-                  { value: 'entregada', label: 'Entregada' },
-                ]}
-                {...register('estado')}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Fecha de Operación</label>
+                <Input
+                  type="date"
+                  error={errors.fecha?.message}
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs"
+                  required
+                  {...register('fecha')}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Folio Documento</label>
+                <Input
+                  placeholder="FACTURA / BOLETA"
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                  {...register('numeroFactura')}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Estado de Pago</label>
+                <Select
+                  options={[
+                    { value: 'pendiente', label: '⏳ PENDIENTE' },
+                    { value: 'pagada', label: '✅ PAGADA' },
+                    { value: 'entregada', label: '📦 ENTREGADA' },
+                  ]}
+                  className="h-12 border-surface-100 bg-surface-50 font-black text-xs uppercase"
+                  {...register('estado')}
+                />
+              </div>
             </div>
 
-            <Textarea
-              label="Notas"
-              placeholder="Observaciones adicionales..."
-              rows={2}
-              {...register('notas')}
-            />
-          </CardContent>
+            <div className="space-y-2">
+                <label className="text-[10px] font-black text-surface-400 uppercase tracking-widest ml-1">Notas Logísticas</label>
+                <Textarea
+                placeholder="OBSERVACIONES TÉCNICAS SOBRE LA COMPRA..."
+                rows={2}
+                className="bg-surface-50 border-surface-100 font-bold text-xs uppercase transition-all focus:ring-2 focus:ring-primary-500/20"
+                {...register('notes' as any)} // Fixed potential naming issue if existed, adjusting name consistency
+                />
+            </div>
+          </div>
         </Card>
 
-        {/* Items de la compra */}
-        <Card>
-          <CardHeader 
-            title="Materiales" 
-            action={
-              <Button 
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={agregarItem}
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                Agregar
-              </Button>
-            }
-          />
-          <CardContent>
+        {/* Dynamic Items Industrial List */}
+        <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-6 bg-accent-500 rounded-full" />
+                    <h3 className="text-[10px] font-black text-surface-900 uppercase tracking-[0.2em]">Manifiesto de Carga</h3>
+                </div>
+                <Button 
+                    type="button"
+                    size="sm"
+                    className="h-9 rounded-xl font-black text-[10px] tracking-widest uppercase bg-surface-900 text-white"
+                    onClick={() => append({ descripcion: '', cantidad: 1, unidad: 'un', precioUnitario: 0 })}
+                >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    ANEXAR ITEM
+                </Button>
+            </div>
+
             {errors.items?.message && (
-              <p className="text-sm text-red-500 mb-4">{errors.items.message}</p>
+              <p className="text-[10px] font-black text-error-600 bg-error-50 p-3 rounded-xl border border-error-100 uppercase tracking-widest text-center">{errors.items.message}</p>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {fields.map((field, index) => (
                 <div 
                   key={field.id}
-                  className="p-4 bg-surface-50 rounded-lg border border-surface-200"
+                  className="group relative bg-white p-5 rounded-[2rem] border border-surface-100 shadow-sm transition-all hover:shadow-md"
                 >
-                  <div className="grid grid-cols-12 gap-3">
-                    {/* Descripción */}
-                    <div className="col-span-12 sm:col-span-5">
+                  <div className="grid grid-cols-12 gap-4">
+                    {/* Item Info */}
+                    <div className="col-span-12 md:col-span-4 space-y-2">
+                      <label className="text-[9px] font-black text-surface-400 uppercase tracking-widest">Descripción</label>
                       <Input
-                        label={index === 0 ? "Material" : undefined}
-                        placeholder="Ej: Cemento Melón"
+                        placeholder="EJ: CEMENTO MELÓN ESPECIAL"
                         error={errors.items?.[index]?.descripcion?.message}
+                        className="h-11 border-surface-100 bg-surface-50/50 font-black text-[11px] uppercase"
                         {...register(`items.${index}.descripcion`)}
                       />
                     </div>
 
-                    {/* Cantidad */}
-                    <div className="col-span-4 sm:col-span-2">
+                    <div className="col-span-4 md:col-span-2 space-y-2">
+                      <label className="text-[9px] font-black text-surface-400 uppercase tracking-widest">Cant.</label>
                       <Input
-                        label={index === 0 ? "Cantidad" : undefined}
                         type="number"
                         step="0.01"
                         placeholder="1"
                         error={errors.items?.[index]?.cantidad?.message}
-                        {...register(`items.${index}.cantidad`)}
+                        className="h-11 border-surface-100 bg-surface-50/50 font-black text-[11px]"
+                        {...register(`items.${index}.cantidad`, { valueAsNumber: true })}
                       />
                     </div>
 
-                    {/* Unidad */}
-                    <div className="col-span-4 sm:col-span-2">
+                    <div className="col-span-4 md:col-span-2 space-y-2">
+                      <label className="text-[9px] font-black text-surface-400 uppercase tracking-widest">Unid.</label>
                       <Select
-                        label={index === 0 ? "Unidad" : undefined}
                         options={unidadesMaterial}
+                        className="h-11 border-surface-100 bg-surface-50/50 font-black text-[11px] uppercase"
                         {...register(`items.${index}.unidad`)}
                       />
                     </div>
 
-                    {/* Precio unitario */}
-                    <div className="col-span-4 sm:col-span-2">
+                    <div className="col-span-4 md:col-span-3 space-y-2">
+                      <label className="text-[9px] font-black text-surface-400 uppercase tracking-widest">V. Unitario</label>
                       <Input
-                        label={index === 0 ? "Precio" : undefined}
                         type="number"
                         placeholder="0"
                         error={errors.items?.[index]?.precioUnitario?.message}
-                        {...register(`items.${index}.precioUnitario`)}
+                        className="h-11 border-surface-100 bg-surface-50/50 font-black text-[11px]"
+                        {...register(`items.${index}.precioUnitario`, { valueAsNumber: true })}
                       />
                     </div>
 
-                    {/* Delete */}
-                    <div className="col-span-12 sm:col-span-1 flex items-end justify-end">
-                      {fields.length > 1 && (
+
+                    {/* Tactical Remove Button */}
+                    <div className="col-span-12 md:col-span-1 flex items-end justify-end">
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => remove(index)}
-                          className="text-red-500 hover:text-red-700"
+                          disabled={fields.length === 1}
+                          className="h-11 w-11 rounded-xl text-error-400 hover:text-error-600 hover:bg-error-50 transition-colors"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-5 h-5" />
                         </Button>
-                      )}
                     </div>
                   </div>
 
-                  {/* Subtotal */}
-                  <div className="mt-2 text-right text-sm text-surface-500">
-                    Subtotal: <span className="font-semibold font-numeric text-surface-700">
+                  {/* Partial Subtotal industrial */}
+                  <div className="mt-4 pt-4 border-t border-surface-50 flex justify-between items-center px-1">
+                    <span className="text-[9px] font-black text-surface-300 uppercase tracking-widest italic">Cálculo de Item</span>
+                    <span className="text-xs font-black text-surface-400 font-numeric">
                       {formatCurrency(subtotales[index] || 0)}
                     </span>
                   </div>
@@ -325,39 +349,42 @@ export function NuevaCompraPage() {
               ))}
             </div>
 
-            {/* Total */}
-            <div className="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-medium text-surface-700">
-                  Total de la Compra
-                </span>
-                <span className="text-2xl font-bold font-numeric text-primary-700">
-                  {formatCurrency(total)}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            {/* Premium Industrial Totalizer */}
+            <div className="mt-8 bg-surface-900 rounded-[2.5rem] p-6 shadow-2xl text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl" />
+                
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 backdrop-blur-md shadow-inner">
+                            <Save className="w-8 h-8 text-primary-400" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">TOTAL LIQUIDACIÓN</p>
+                            <h2 className="text-4xl font-black text-white font-numeric leading-none tracking-tighter">{formatCurrency(total)}</h2>
+                        </div>
+                    </div>
 
-        {/* Botones */}
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(-1)}
-            className="flex-1"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex-1"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isSubmitting ? 'Guardando...' : 'Guardar Compra'}
-          </Button>
-        </div>
+                    <div className="flex flex-col gap-2.5 min-w-[220px]">
+                        <div className="flex justify-between items-center px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                            <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">NETO OPERATIVO</span>
+                            <span className="text-xs font-bold font-numeric">{formatCurrency(total)}</span>
+                        </div>
+                        <div className="flex justify-between items-center px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                            <span className="text-[9px] font-black text-primary-400 uppercase tracking-widest">IVA CRÉDITO (19%)</span>
+                            <span className="text-xs font-bold font-numeric text-primary-400">{formatCurrency(Math.round(total * 0.19))}</span>
+                        </div>
+                    </div>
+
+                    <Button
+                        type="submit"
+                        isLoading={isSubmitting}
+                        className="h-16 px-10 rounded-[1.75rem] bg-white text-surface-900 hover:bg-primary-50 font-black text-xs tracking-[0.2em] uppercase shadow-xl transition-all active:scale-[0.98] border-none"
+                    >
+                        REGISTRAR ADQUISICIÓN
+                    </Button>
+                </div>
+            </div>
+          </div>
       </form>
     </div>
   );

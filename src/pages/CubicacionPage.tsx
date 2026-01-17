@@ -12,11 +12,10 @@ import {
   Grid3X3,
   Columns,
   Square,
-  Save,
   RotateCcw,
+  Info,
   CheckCircle,
-  ChevronRight,
-  Info
+  Save
 } from 'lucide-react';
 import {
   Card,
@@ -76,39 +75,41 @@ const tiposMalla = Object.entries(MALLAS_ACMA).map(([key, val]) => ({
 
 function ResultadoCard({ resultado }: { resultado: ResultadoCubicacion }) {
   return (
-    <Card className="border-2 border-success-500 bg-success-50 animate-fade-in-up">
+    <Card className="border-none shadow-xl bg-white animate-fade-in-up relative overflow-hidden" padding="lg">
+      <div className="absolute top-0 left-0 w-1.5 h-full bg-success-500" />
+      
       {/* Header */}
-      <div className="flex items-center gap-4 mb-5 pb-4 border-b border-success-200">
-        <div className="w-12 h-12 rounded-xl bg-success-600 flex items-center justify-center shadow-lg">
-          <CheckCircle className="w-6 h-6 text-white" />
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-success-50 flex items-center justify-center border border-success-100">
+          <CheckCircle className="w-5 h-5 text-success-600" />
         </div>
         <div className="flex-1">
-          <h3 className="font-black text-surface-900 text-lg">Resultado</h3>
-          <p className="text-sm font-medium text-surface-600">Según NCh 170</p>
+          <h3 className="font-bold text-surface-900 text-base">Cálculo Exitoso</h3>
+          <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest">Normativa NCh 170</p>
         </div>
-        <Button size="sm" variant="success" leftIcon={<Save className="w-4 h-4" />}>
+        <Button size="sm" className="rounded-full px-4 h-8 text-[11px] font-black uppercase tracking-wider shadow-sm" leftIcon={<Save className="w-3.5 h-3.5" />}>
           Guardar
         </Button>
       </div>
 
-      {/* Dimensiones */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
+      {/* Dimensiones - Compact Grid */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
         {resultado.superficie && (
-          <div className="bg-white p-4 rounded-xl border border-success-200">
-            <p className="text-xs font-bold text-surface-500 uppercase tracking-wide mb-1">
+          <div className="bg-surface-50 p-3 rounded-2xl border border-surface-100">
+            <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">
               Superficie
             </p>
-            <p className="text-2xl font-black font-numeric text-surface-900">
+            <p className="text-xl font-bold font-numeric text-surface-900 leading-none">
               {formatWithUnit(resultado.superficie, 'm²')}
             </p>
           </div>
         )}
         {resultado.volumen && (
-          <div className="bg-white p-4 rounded-xl border border-success-200">
-            <p className="text-xs font-bold text-surface-500 uppercase tracking-wide mb-1">
+          <div className="bg-surface-50 p-3 rounded-2xl border border-surface-100">
+            <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">
               Volumen
             </p>
-            <p className="text-2xl font-black font-numeric text-surface-900">
+            <p className="text-xl font-bold font-numeric text-surface-900 leading-none">
               {formatWithUnit(resultado.volumen, 'm³')}
             </p>
           </div>
@@ -117,18 +118,20 @@ function ResultadoCard({ resultado }: { resultado: ResultadoCubicacion }) {
 
       {/* Materiales */}
       <div>
-        <h4 className="font-bold text-surface-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
-          <Box className="w-4 h-4" />
-          Materiales Necesarios
-        </h4>
-        <div className="space-y-2">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-1 w-3 rounded-full bg-success-500" />
+          <h4 className="font-black text-surface-400 text-[10px] uppercase tracking-[0.2em]">
+            Dosificación Requerida
+          </h4>
+        </div>
+        <div className="space-y-1.5">
           {resultado.materiales.map((material: MaterialCubicacion, index: number) => (
             <div
               key={index}
-              className="flex items-center justify-between bg-white p-4 rounded-xl border border-success-200"
+              className="flex items-center justify-between bg-surface-50/50 px-4 py-3 rounded-xl border border-surface-100"
             >
-              <span className="font-semibold text-surface-700">{material.nombre}</span>
-              <span className="font-black font-numeric text-surface-900 bg-success-100 px-3 py-1 rounded-lg">
+              <span className="text-xs font-bold text-surface-700">{material.nombre}</span>
+              <span className="font-bold font-numeric text-sm text-primary-700">
                 {formatWithUnit(material.cantidad, material.unidad)}
               </span>
             </div>
@@ -236,74 +239,67 @@ export function CubicacionPage() {
   const calculadoraActual = calculadoras.find(c => c.id === calculadoraActiva)!;
 
   return (
-    <div className="min-h-full px-5 py-4 pb-8">
+    <div className="p-4 lg:p-6 space-y-8">
       {/* Header */}
-      <div className="bg-white border border-surface-200 rounded-2xl shadow-card mb-4">
-        <div className="px-5 py-5">
-          <div className="flex items-center gap-4 mb-5">
-            <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg">
-              <Calculator className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-black text-surface-900">Cubicación</h1>
-              <p className="text-sm font-medium text-surface-600">
-                Normativas NCh chilenas
-              </p>
-            </div>
-          </div>
-
-          {/* Calculator Selector */}
-          <div className="relative">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {calculadoras.map((calc) => {
-                const isActive = calculadoraActiva === calc.id;
-                return (
-                  <button
-                    key={calc.id}
-                    onClick={() => cambiarCalculadora(calc.id)}
-                    className={`
-                      flex-shrink-0 flex flex-col items-center justify-center
-                      p-3 rounded-xl border-2 transition-all duration-150
-                      min-w-[72px] press-effect
-                      ${isActive
-                        ? 'border-primary-600 bg-primary-50 shadow-sm'
-                        : 'border-surface-200 bg-white hover:border-surface-300'
-                      }
-                    `}
-                  >
-                    <calc.icon className={`w-5 h-5 mb-1 ${isActive ? 'text-primary-600' : 'text-surface-500'}`} />
-                    <span className={`text-[10px] font-bold ${isActive ? 'text-primary-700' : 'text-surface-700'}`}>
-                      {calc.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+      <div className="flex items-end justify-between">
+        <div className="min-w-0">
+          <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+            Ingeniería de Campo
+          </span>
+          <h1 className="text-2xl font-black text-surface-900 leading-none truncate">
+            Cubicación de Materiales
+          </h1>
+        </div>
+        <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0 border border-primary-100">
+          <Calculator className="w-5 h-5 text-primary-600" />
         </div>
       </div>
 
+      {/* Selector de Calculadora - Modern Grid */}
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+          <h2 className="text-xs font-black text-surface-400 uppercase tracking-widest">
+            Seleccionar Elemento
+          </h2>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          {calculadoras.map((calc) => {
+            const isActive = calculadoraActiva === calc.id;
+            return (
+              <button
+                key={calc.id}
+                onClick={() => cambiarCalculadora(calc.id)}
+                className={`
+                  flex flex-col items-center justify-center p-3 rounded-2xl transition-all border
+                  ${isActive
+                    ? 'bg-primary-500 text-white border-primary-400 shadow-lg shadow-primary-200 scale-105 z-10'
+                    : 'bg-white text-surface-500 border-surface-100 hover:border-primary-200'
+                  }
+                `}
+              >
+                <calc.icon className={`w-5 h-5 mb-1.5 ${isActive ? 'text-white' : 'text-primary-500'}`} />
+                <span className="text-[10px] font-black uppercase tracking-tight leading-none text-center">{calc.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Content */}
-      <div className="space-y-4">
-        {/* Active Calculator Card */}
-        <Card className="border-l-4 border-l-primary-600">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center">
-              <calculadoraActual.icon className="w-6 h-6 text-primary-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-surface-900">
-                Calcular {calculadoraActual.label}
-              </h3>
-              <p className="text-sm text-surface-600">{calculadoraActual.description}</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-surface-400" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12">
+        <div className="space-y-6">
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="h-4 w-1 bg-primary-500 rounded-full" />
+            <h2 className="text-[10px] font-black text-surface-400 uppercase tracking-[0.2em]">
+              Parámetros: {calculadoraActual.label}
+            </h2>
           </div>
-        </Card>
 
         {/* Form */}
-        <Card>
-          <form onSubmit={handleSubmit(calcular)} className="space-y-5">
+          <Card className="border-none shadow-sm h-fit bg-white/50 backdrop-blur-sm" padding="lg">
+          <form onSubmit={handleSubmit(calcular)} className="space-y-6">
+            <div className="space-y-4">
             {/* ZAPATA */}
             {calculadoraActiva === 'zapata' && (
               <>
@@ -393,46 +389,71 @@ export function CubicacionPage() {
                 </div>
               </>
             )}
+            </div>
 
             {/* Buttons */}
-            <div className="flex gap-3 pt-2">
-              <Button type="submit" fullWidth leftIcon={<Calculator className="w-5 h-5" />}>
-                Calcular
+            <div className="flex gap-3 pt-4 border-t border-surface-100">
+              <Button 
+                 type="submit" 
+                 fullWidth 
+                 className="rounded-2xl font-black text-xs uppercase tracking-widest h-12 shadow-lg shadow-primary-200"
+              >
+                <Calculator className="w-4 h-4 mr-2" />
+                GENERAR CÁLCULO
               </Button>
-              <Button type="button" variant="outline" onClick={limpiar} size="icon">
-                <RotateCcw className="w-5 h-5" />
+              <Button 
+                 type="button" 
+                 variant="outline" 
+                 onClick={limpiar} 
+                 size="icon"
+                 className="rounded-2xl h-12 w-12 border-surface-200"
+              >
+                <RotateCcw className="w-5 h-5 text-surface-400" />
               </Button>
             </div>
           </form>
         </Card>
+        </div>
 
-        {/* Result */}
-        {resultado ? (
-          <ResultadoCard resultado={resultado} />
-        ) : (
-          <Card className="border-2 border-dashed border-surface-300">
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-surface-100 flex items-center justify-center mb-4">
-                <Calculator className="w-8 h-8 text-surface-400" />
+        {/* Result Area */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="h-4 w-1 bg-success-500 rounded-full" />
+            <h2 className="text-[10px] font-black text-surface-400 uppercase tracking-[0.2em]">
+               Reporte de Dosificación
+            </h2>
+          </div>
+
+          {resultado ? (
+            <ResultadoCard resultado={resultado} />
+          ) : (
+            <Card className="border-2 border-dashed border-surface-200 bg-surface-50/50 rounded-3xl h-full min-h-[300px] flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center text-center p-8">
+                <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm border border-surface-100">
+                  <Calculator className="w-10 h-10 text-surface-200" />
+                </div>
+                <h3 className="font-black text-surface-400 uppercase tracking-widest text-xs mb-2">Calculadora en Espera</h3>
+                <p className="text-[11px] font-bold text-surface-400 max-w-[200px] leading-relaxed">
+                  Ingrese las dimensiones requeridas para procesar el cómputo de materiales.
+                </p>
               </div>
-              <p className="font-bold text-surface-600">Sin resultados</p>
-              <p className="text-sm text-surface-500 mt-1">
-                Complete el formulario y presione Calcular
+            </Card>
+          )}
+
+          {/* NCh Info */}
+          <div className="flex items-start gap-4 p-5 rounded-3xl bg-surface-900 text-white shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
+               <Info className="w-24 h-24" />
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center flex-shrink-0">
+              <Info className="w-5 h-5 text-primary-400" />
+            </div>
+            <div className="relative z-10">
+              <p className="font-black text-[10px] uppercase tracking-widest text-primary-400 mb-1">Nota Técnica NCh 170</p>
+              <p className="text-[11px] font-medium text-surface-300 leading-relaxed">
+                Los cálculos presentados siguen las directrices de la normativa Chilena vigente para la dosificación de hormigones y materiales de construcción. Use estos valores como referencia técnica para sus pedidos.
               </p>
             </div>
-          </Card>
-        )}
-
-        {/* NCh Info */}
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-surface-800 text-white">
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-            <Info className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="font-bold text-sm">Normativa NCh 170</p>
-            <p className="text-sm text-white/70 mt-1 leading-relaxed">
-              Dosificación oficial para hormigones en Chile.
-            </p>
           </div>
         </div>
       </div>

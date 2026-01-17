@@ -19,21 +19,21 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { to: '/', icon: Home, label: 'Inicio' },
-  { to: '/obras', icon: HardHat, label: 'Obras' },
-  { to: '/cubicacion', icon: Calculator, label: 'Cubicar' },
-  { to: '/actividades', icon: CalendarDays, label: 'Tareas' },
-  { to: '/mas', icon: LayoutGrid, label: 'Más' },
+  { to: '/', icon: Home, label: 'PANEL' },
+  { to: '/obras', icon: HardHat, label: 'OBRAS' },
+  { to: '/cubicacion', icon: Calculator, label: 'CÁLCULO' },
+  { to: '/actividades', icon: CalendarDays, label: 'TAREAS' },
+  { to: '/mas', icon: LayoutGrid, label: 'GESTIÓN' },
 ];
 
 export function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden px-5 pb-4 safe-area-bottom">
-      {/* Floating nav container */}
-      <div className="bg-white border border-surface-200 rounded-2xl shadow-lg">
-        <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden px-4 pb-4 safe-area-bottom">
+      {/* Premium Industrial floating nav */}
+      <div className="bg-white/95 backdrop-blur-md border border-surface-100 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+        <div className="flex items-center justify-around h-20 px-2">
           {navItems.map((item, index) => {
             const isActive = location.pathname === item.to ||
               (item.to !== '/' && location.pathname.startsWith(item.to));
@@ -44,25 +44,25 @@ export function BottomNav() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  className="relative flex flex-col items-center justify-center -mt-6"
+                  className="relative flex flex-col items-center justify-center -mt-10"
                 >
-                  {/* Floating Button */}
+                  {/* Tactical Floating Button */}
                   <div
                     className={`
-                      w-12 h-12 rounded-xl flex items-center justify-center
-                      shadow-lg transition-all duration-150 press-effect
+                      w-14 h-14 rounded-2xl flex items-center justify-center
+                      shadow-2xl transition-all duration-300 active:scale-90
                       ${isActive
-                        ? 'bg-primary-600'
-                        : 'bg-primary-600 hover:bg-primary-700'
+                        ? 'bg-surface-900 ring-4 ring-white'
+                        : 'bg-primary-600 ring-4 ring-white'
                       }
                     `}
                   >
-                    <item.icon className="h-5 w-5 text-white" />
+                    <item.icon className="h-6 w-6 text-white" />
                   </div>
                   <span
                     className={`
-                      text-[9px] font-bold mt-1 uppercase tracking-wide
-                      ${isActive ? 'text-primary-600' : 'text-surface-500'}
+                      text-[8px] font-black mt-1.5 uppercase tracking-[0.15em]
+                      ${isActive ? 'text-surface-900' : 'text-surface-400'}
                     `}
                   >
                     {item.label}
@@ -75,25 +75,25 @@ export function BottomNav() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                className="relative flex flex-col items-center justify-center h-full px-2"
+                className="relative flex flex-col items-center justify-center h-full px-1"
               >
-                {/* Active indicator */}
+                {/* Active indicator bar */}
                 {isActive && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary-600 rounded-b-full" />
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-4 h-1 bg-surface-900 rounded-full" />
                 )}
 
-                {/* Icon */}
+                {/* Icon tactical */}
                 <div
                   className={`
-                    w-9 h-9 rounded-lg flex items-center justify-center
-                    transition-all duration-150
-                    ${isActive ? 'bg-primary-50' : ''}
+                    w-10 h-10 rounded-xl flex items-center justify-center
+                    transition-all duration-300
+                    ${isActive ? 'bg-surface-100' : ''}
                   `}
                 >
                   <item.icon
                     className={`
-                      h-5 w-5 transition-colors duration-150
-                      ${isActive ? 'text-primary-600' : 'text-surface-400'}
+                      h-5 w-5 transition-colors duration-300
+                      ${isActive ? 'text-surface-900' : 'text-surface-400'}
                     `}
                   />
                 </div>
@@ -101,8 +101,8 @@ export function BottomNav() {
                 {/* Label */}
                 <span
                   className={`
-                    text-[9px] uppercase tracking-wide
-                    ${isActive ? 'font-bold text-primary-600' : 'font-semibold text-surface-400'}
+                    text-[8px] font-black mt-1 uppercase tracking-[0.1em]
+                    ${isActive ? 'text-surface-900' : 'text-surface-400'}
                   `}
                 >
                   {item.label}

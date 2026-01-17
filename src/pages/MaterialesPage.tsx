@@ -11,8 +11,6 @@ import {
     Search,
     Building2,
     AlertTriangle,
-    ArrowUpCircle,
-    ArrowDownCircle,
 } from 'lucide-react';
 import {
     Card,
@@ -71,67 +69,80 @@ function MaterialCard({
     const stockBajo = porcentajeStock < 20;
 
     return (
-        <Card className={stockBajo ? 'border-l-4 border-l-warning-500' : ''}>
-            <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-surface-900 truncate">{material.nombre}</h3>
-                        {stockBajo && (
-                            <AlertTriangle className="w-4 h-4 text-warning-500 flex-shrink-0" />
-                        )}
+        <Card className={`hover:border-primary-300 transition-all border-l-4 ${stockBajo ? 'border-l-error-500' : 'border-l-success-500'} overflow-hidden shadow-sm`} padding="none">
+            <div className="p-4">
+                <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-[10px] font-black text-primary-600 uppercase tracking-widest leading-none">
+                                {material.categoria}
+                            </span>
+                            {stockBajo && (
+                                <Badge className="bg-error-50 text-error-600 border-none text-[8px] font-black uppercase tracking-tighter px-1 py-0 flex items-center gap-0.5">
+                                   <AlertTriangle className="w-2.5 h-2.5" /> CRÍTICO
+                                </Badge>
+                            )}
+                        </div>
+                        <h3 className="font-black text-surface-900 truncate uppercase tracking-tight text-sm">
+                            {material.nombre}
+                        </h3>
                     </div>
-                    <div className="flex items-center gap-2 mt-1">
-                        <Badge size="sm" variant="default">{material.categoria}</Badge>
-                        <span className="text-xs text-surface-500">{material.unidad}</span>
+                </div>
+
+                {/* Stock Info Industrial */}
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                    <div className="text-left">
+                        <p className="text-[9px] font-black text-surface-400 uppercase tracking-tighter mb-1">Requerido</p>
+                        <p className="text-sm font-black font-numeric text-surface-900 leading-none">
+                            {material.cantidadRequerida} <span className="text-[9px] font-bold text-surface-400">{material.unidad}</span>
+                        </p>
+                    </div>
+                    <div className="text-left border-l border-surface-100 pl-3">
+                        <p className="text-[9px] font-black text-surface-400 uppercase tracking-tighter mb-1">Disponible</p>
+                        <p className={`text-sm font-black font-numeric leading-none ${stockBajo ? 'text-error-600' : 'text-success-600'}`}>
+                            {material.cantidadEnStock} <span className="text-[9px] font-bold text-surface-400">{material.unidad}</span>
+                        </p>
+                    </div>
+                    <div className="text-left border-l border-surface-100 pl-3">
+                        <p className="text-[9px] font-black text-surface-400 uppercase tracking-tighter mb-1">Consumo</p>
+                        <p className="text-sm font-black font-numeric text-primary-600 leading-none">
+                            {material.cantidadUtilizada} <span className="text-[9px] font-bold text-surface-400">{material.unidad}</span>
+                        </p>
                     </div>
                 </div>
-            </div>
 
-            {/* Stock Info */}
-            <div className="grid grid-cols-3 gap-2 mb-3 text-center">
-                <div className="bg-surface-50 rounded-lg p-2">
-                    <p className="text-xs text-surface-500">Requerido</p>
-                    <p className="font-bold font-numeric text-surface-900">{material.cantidadRequerida}</p>
+                {/* Progress Bar High Contrast */}
+                <div className="space-y-1 mb-5">
+                   <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest mb-1">
+                      <span className="text-surface-400">Estado de Acopio</span>
+                      <span className={stockBajo ? 'text-error-600' : 'text-success-600'}>{Math.round(porcentajeStock)}%</span>
+                   </div>
+                   <div className="h-1.5 bg-surface-100 rounded-full overflow-hidden">
+                       <div
+                           className={`h-full rounded-full transition-all duration-500 shadow-sm ${stockBajo ? 'bg-error-500 animate-pulse' : 'bg-success-500'}`}
+                           style={{ width: `${Math.min(porcentajeStock, 100)}%` }}
+                       />
+                   </div>
                 </div>
-                <div className="bg-success-50 rounded-lg p-2">
-                    <p className="text-xs text-success-600">En Stock</p>
-                    <p className="font-bold font-numeric text-success-700">{material.cantidadEnStock}</p>
-                </div>
-                <div className="bg-primary-50 rounded-lg p-2">
-                    <p className="text-xs text-primary-600">Utilizado</p>
-                    <p className="font-bold font-numeric text-primary-700">{material.cantidadUtilizada}</p>
-                </div>
-            </div>
 
-            {/* Progress Bar */}
-            <div className="h-2 bg-surface-100 rounded-full overflow-hidden mb-3">
-                <div
-                    className={`h-full rounded-full transition-all ${stockBajo ? 'bg-warning-500' : 'bg-success-500'
-                        }`}
-                    style={{ width: `${Math.min(porcentajeStock, 100)}%` }}
-                />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-                <Button
-                    size="sm"
-                    variant="success"
-                    fullWidth
-                    leftIcon={<ArrowUpCircle className="w-4 h-4" />}
-                    onClick={onAgregarStock}
-                >
-                    Agregar
-                </Button>
-                <Button
-                    size="sm"
-                    variant="outline"
-                    fullWidth
-                    leftIcon={<ArrowDownCircle className="w-4 h-4" />}
-                    onClick={onUsarStock}
-                >
-                    Usar
-                </Button>
+                {/* Actions Industrial */}
+                <div className="flex gap-2 pt-2">
+                    <Button
+                        size="sm"
+                        className="bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex-1 h-9 shadow-md shadow-primary-100"
+                        onClick={onAgregarStock}
+                    >
+                        + ABASTECER
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-xl border-surface-200 font-black text-[10px] uppercase tracking-widest flex-1 h-9"
+                        onClick={onUsarStock}
+                    >
+                        - DESPACHAR
+                    </Button>
+                </div>
             </div>
         </Card>
     );
@@ -242,90 +253,95 @@ export function MaterialesPage() {
     };
 
     return (
-        <div className="min-h-full px-5 py-4">
-            {/* Header */}
-            <div className="bg-white border border-surface-200 rounded-2xl shadow-card mb-4">
-                <div className="p-5">
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-accent-600 flex items-center justify-center shadow-lg">
-                                <Package className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-black text-surface-900">Materiales</h1>
-                                <p className="text-sm text-surface-600">Inventario por obra</p>
-                            </div>
-                        </div>
-                        {obraSeleccionada && (
-                            <Button
-                                size="sm"
-                                leftIcon={<Plus className="w-4 h-4" />}
-                                onClick={() => setModalNuevo(true)}
-                            >
-                                Nuevo
-                            </Button>
-                        )}
+        <div className="min-h-full px-4 py-6 space-y-6">
+            {/* Header Industrial Premium */}
+            <div className="flex flex-col gap-6">
+                <div className="flex items-start justify-between">
+                    <div className="min-w-0">
+                        <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1 block">
+                           Control de Inventario
+                        </span>
+                        <h1 className="text-3xl font-black text-surface-900 leading-none truncate">
+                           Ficha de Materiales
+                        </h1>
                     </div>
+                    <div className="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center border border-primary-100 flex-shrink-0">
+                        <Package className="w-6 h-6 text-primary-600" />
+                    </div>
+                </div>
 
-                    <Select
-                        label="Seleccionar Obra"
-                        value={obraSeleccionada}
-                        onChange={(e) => setObraSeleccionada(e.target.value)}
-                        options={[
-                            { value: '', label: 'Seleccione una obra...' },
-                            ...obras.map(o => ({ value: o.id!, label: o.nombre })),
-                        ]}
-                    />
+                <div className="bg-white p-2 rounded-3xl border border-surface-100 shadow-sm">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                       <Select
+                           options={[
+                               { value: '', label: 'Seleccionar Frente de Obra' },
+                               ...obras.map(o => ({ value: o.id!, label: o.nombre })),
+                           ]}
+                           value={obraSeleccionada}
+                           onChange={(e) => setObraSeleccionada(e.target.value)}
+                           className="border-none bg-surface-50 rounded-2xl h-12 font-bold text-xs"
+                       />
+                       {obraSeleccionada && (
+                           <Button
+                               onClick={() => setModalNuevo(true)}
+                               className="rounded-2xl font-black text-xs uppercase tracking-widest h-12 shadow-lg shadow-primary-200"
+                           >
+                               <Plus className="w-4 h-4 mr-2" />
+                               NUEVO INSUMO
+                           </Button>
+                       )}
+                   </div>
                 </div>
             </div>
 
             {!obraSeleccionada ? (
-                <Card className="border-2 border-dashed border-surface-300">
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <Building2 className="w-16 h-16 text-surface-300 mb-4" />
-                        <p className="font-bold text-surface-600">Seleccione una obra</p>
-                        <p className="text-sm text-surface-500 mt-1">
-                            Para ver y gestionar sus materiales
-                        </p>
+                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border-2 border-dashed border-surface-200">
+                    <div className="w-20 h-20 rounded-full bg-surface-50 flex items-center justify-center mb-6 shadow-sm">
+                       <Building2 className="w-10 h-10 text-surface-200" />
                     </div>
-                </Card>
+                    <h2 className="text-xs font-black text-surface-400 uppercase tracking-widest mb-2">Frente de Obra No Seleccionado</h2>
+                    <p className="text-[11px] font-bold text-surface-400 max-w-[250px] text-center leading-relaxed">
+                        Seleccione un proyecto activo para visualizar el despliegue de materiales y stock disponible.
+                    </p>
+                </div>
             ) : (
-                <>
-                    {/* Filters */}
-                    <div className="flex gap-2 mb-4">
-                        <div className="flex-1">
-                            <Input
-                                placeholder="Buscar material..."
+                <div className="space-y-6">
+                    {/* Filtros Modernos */}
+                    <div className="flex gap-2">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-300" />
+                            <input
+                                placeholder="Buscar en bodega..."
                                 value={busqueda}
                                 onChange={(e) => setBusqueda(e.target.value)}
-                                leftIcon={<Search className="w-4 h-4" />}
+                                className="w-full pl-11 pr-4 py-2.5 bg-white border border-surface-100 rounded-2xl text-xs font-bold text-surface-700 placeholder:text-surface-300 focus:ring-2 focus:ring-primary-500 shadow-sm transition-all"
                             />
                         </div>
                         <Select
-                            value={categoriaFiltro}
-                            onChange={(e) => setCategoriaFiltro(e.target.value)}
                             options={[
-                                { value: '', label: 'Todas' },
+                                { value: '', label: 'Categorías' },
                                 ...CATEGORIAS.map(c => ({ value: c, label: c })),
                             ]}
-                            className="w-32"
+                            value={categoriaFiltro}
+                            onChange={(e) => setCategoriaFiltro(e.target.value)}
+                            className="w-1/3 sm:w-1/4 border-none bg-white rounded-2xl h-[42px] shadow-sm"
                         />
                     </div>
 
                     {/* Materials List */}
                     {materialesFiltrados.length === 0 ? (
                         <EmptyState
-                            icon={<Package className="w-10 h-10 text-surface-400" />}
-                            title="Sin materiales"
-                            description="Agregue materiales al inventario de esta obra"
-                            variant="card"
+                            icon={<Package className="w-16 h-16 text-surface-100" />}
+                            title="BODEGA VACÍA"
+                            description="No se han registrado insumos para este frente de obra."
                             action={{
-                                label: 'Agregar Material',
+                                label: 'ALTA DE MATERIAL',
                                 onClick: () => setModalNuevo(true),
                             }}
+                            className="bg-white border-2 border-dashed border-surface-200 rounded-3xl py-20"
                         />
                     ) : (
-                        <div className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {materialesFiltrados.map(material => (
                                 <MaterialCard
                                     key={material.id}
@@ -336,56 +352,66 @@ export function MaterialesPage() {
                             ))}
                         </div>
                     )}
-                </>
+                </div>
             )}
 
             {/* Modal Nuevo Material */}
             <Modal
                 isOpen={modalNuevo}
                 onClose={() => setModalNuevo(false)}
-                title="Nuevo Material"
+                title="REGISTRO DE INSUMO"
                 variant="sheet"
             >
-                <div className="space-y-4">
+                <div className="space-y-4 pt-2">
                     <Input
-                        label="Nombre del Material"
-                        placeholder="Ej: Cemento Polpaico"
+                        label="Descripción del Material"
+                        placeholder="Ej: Cemento Polpaico Especial"
                         value={nuevoMaterial.nombre}
                         onChange={(e) => setNuevoMaterial(prev => ({ ...prev, nombre: e.target.value }))}
                         required
-                    />
-                    <Select
-                        label="Categoría"
-                        value={nuevoMaterial.categoria}
-                        onChange={(e) => setNuevoMaterial(prev => ({ ...prev, categoria: e.target.value }))}
-                        options={[
-                            { value: '', label: 'Seleccione...' },
-                            ...CATEGORIAS.map(c => ({ value: c, label: c })),
-                        ]}
-                        required
-                    />
-                    <Select
-                        label="Unidad de Medida"
-                        value={nuevoMaterial.unidad}
-                        onChange={(e) => setNuevoMaterial(prev => ({ ...prev, unidad: e.target.value as UnidadMedida }))}
-                        options={UNIDADES}
+                        className="bg-surface-50"
                     />
                     <div className="grid grid-cols-2 gap-3">
+                        <Select
+                            label="Categoría"
+                            value={nuevoMaterial.categoria}
+                            onChange={(e) => setNuevoMaterial(prev => ({ ...prev, categoria: e.target.value }))}
+                            options={[
+                                { value: '', label: 'Tipo...' },
+                                ...CATEGORIAS.map(c => ({ value: c, label: c })),
+                            ]}
+                            required
+                        />
+                        <Select
+                            label="Unidad"
+                            value={nuevoMaterial.unidad}
+                            onChange={(e) => setNuevoMaterial(prev => ({ ...prev, unidad: e.target.value as UnidadMedida }))}
+                            options={UNIDADES}
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
                         <Input
-                            label="Cantidad Requerida"
+                            label="Requerido (Meta)"
                             type="number"
                             value={nuevoMaterial.cantidadRequerida || ''}
                             onChange={(e) => setNuevoMaterial(prev => ({ ...prev, cantidadRequerida: parseFloat(e.target.value) || 0 }))}
+                            className="bg-surface-50 font-numeric"
                         />
                         <Input
-                            label="Stock Inicial"
+                            label="Acopio Inicial"
                             type="number"
                             value={nuevoMaterial.cantidadEnStock || ''}
                             onChange={(e) => setNuevoMaterial(prev => ({ ...prev, cantidadEnStock: parseFloat(e.target.value) || 0 }))}
+                            className="bg-surface-50 font-numeric"
                         />
                     </div>
-                    <Button fullWidth onClick={handleCrearMaterial} isLoading={isLoading}>
-                        Guardar Material
+                    <Button 
+                        fullWidth 
+                        onClick={handleCrearMaterial} 
+                        isLoading={isLoading}
+                        className="rounded-2xl font-black text-xs uppercase tracking-widest h-12 shadow-lg shadow-primary-200 mt-4"
+                    >
+                        CONFIRMAR ALTA
                     </Button>
                 </div>
             </Modal>
@@ -394,32 +420,43 @@ export function MaterialesPage() {
             <Modal
                 isOpen={!!modalStock}
                 onClose={() => setModalStock(null)}
-                title={modalStock?.tipo === 'agregar' ? 'Agregar al Stock' : 'Registrar Uso'}
+                title={modalStock?.tipo === 'agregar' ? 'ORDEN DE ABASTECIMIENTO' : 'REGISTRO DE DESPACHO'}
                 variant="sheet"
             >
                 {modalStock && (
-                    <div className="space-y-4">
-                        <div className="bg-surface-50 p-4 rounded-xl">
-                            <p className="font-bold text-surface-900">{modalStock.material.nombre}</p>
-                            <p className="text-sm text-surface-600">
-                                Stock actual: {modalStock.material.cantidadEnStock} {modalStock.material.unidad}
-                            </p>
+                    <div className="space-y-4 pt-2">
+                        <div className="bg-primary-900 p-5 rounded-2xl relative overflow-hidden">
+                            <div className="relative z-10">
+                                <p className="text-[10px] font-black text-primary-300 uppercase tracking-widest mb-1">Insumo Seleccionado</p>
+                                <p className="font-black text-white uppercase text-lg">{modalStock.material.nombre}</p>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-[10px] font-bold bg-white/10 text-white px-2 py-0.5 rounded uppercase">
+                                        Stock: {modalStock.material.cantidadEnStock} {modalStock.material.unidad}
+                                    </span>
+                                </div>
+                            </div>
+                            <Package className="absolute -right-4 -bottom-4 w-20 h-20 text-white opacity-5" />
                         </div>
                         <Input
-                            label={modalStock.tipo === 'agregar' ? 'Cantidad a Agregar' : 'Cantidad Utilizada'}
+                            label={modalStock.tipo === 'agregar' ? 'Ingrese Cantidad a Sumar' : 'Ingrese Cantidad para Obra'}
                             type="number"
-                            placeholder="0"
+                            placeholder="0.00"
                             value={cantidadStock}
                             onChange={(e) => setCantidadStock(e.target.value)}
                             required
+                            className="text-lg font-black font-numeric h-14 bg-surface-50"
                         />
                         <Button
                             fullWidth
-                            variant={modalStock.tipo === 'agregar' ? 'success' : 'primary'}
+                            className={`rounded-2xl font-black text-xs uppercase tracking-widest h-14 shadow-lg mt-4 ${
+                                modalStock.tipo === 'agregar' 
+                                ? 'bg-success-500 hover:bg-success-600 shadow-success-200' 
+                                : 'bg-primary-500 hover:bg-primary-600 shadow-primary-200'
+                            }`}
                             onClick={handleActualizarStock}
                             isLoading={isLoading}
                         >
-                            {modalStock.tipo === 'agregar' ? 'Agregar Stock' : 'Registrar Uso'}
+                            {modalStock.tipo === 'agregar' ? 'CONFIRMAR CARGA' : 'REGISTRAR SALIDA'}
                         </Button>
                     </div>
                 )}
