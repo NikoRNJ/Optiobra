@@ -1,0 +1,81 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "google/gemini-2.0-flash",
+  
+  "theme": "opencode",
+  "autoupdate": true,
+  
+  "instructions": [
+    "src/types/index.ts",
+    "src/utils/constants.ts"
+  ],
+  
+  "permission": {
+    "edit": "allow",
+    "bash": "allow"
+  },
+  
+  "formatter": {
+    "prettier": {
+      "command": ["npx", "prettier", "--write", "$FILE"],
+      "extensions": [".js", ".ts", ".jsx", ".tsx", ".json", ".css"]
+    }
+  },
+  
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      "android/**",
+      "ios/**",
+      "*.log"
+    ]
+  },
+  
+  "provider": {
+    "anthropic": {
+      "models": {
+        "claude-opus-4-5": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 32000
+            }
+          }
+        },
+        "claude-sonnet-4-5": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        }
+      }
+    }
+  },
+  
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
+    },
+    "token_optimizer": {
+      "type": "local",
+      "command": ["npx", "-y", "token-optimizer-mcp"],
+      "enabled": true
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp",
+      "oauth": {},
+      "enabled": true
+    }
+  },
+  
+  "default_agent": "build"
+}
