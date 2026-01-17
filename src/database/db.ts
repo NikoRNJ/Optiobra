@@ -10,7 +10,8 @@ import type {
   Material, 
   Compra, 
   Actividad, 
-  Cubicacion 
+  Cubicacion,
+  RegistroHora
 } from '@/types';
 
 // ============================================
@@ -25,6 +26,7 @@ class OptiObraDatabase extends Dexie {
   compras!: Table<Compra, string>;
   actividades!: Table<Actividad, string>;
   cubicaciones!: Table<Cubicacion, string>;
+  registrosHora!: Table<RegistroHora, string>;
 
   constructor() {
     super('OptiObraDB');
@@ -38,6 +40,7 @@ class OptiObraDatabase extends Dexie {
       compras: 'id, obraId, fecha, proveedor, createdAt',
       actividades: 'id, obraId, fecha, tipo, estado, createdAt',
       cubicaciones: 'id, obraId, tipo, nombre, createdAt',
+      registrosHora: 'id, obraId, trabajadorId, fecha, tipo, aprobado, createdAt',
     });
   }
 }
@@ -336,6 +339,78 @@ export const cubicacionesRepo = {
 
   async delete(id: string): Promise<void> {
     await db.cubicaciones.delete(id);
+  },
+};
+
+// Repositorio de Horas Laborales (HLA)
+export const registrosHoraRepo = {
+  async getByObra(obraId: string): Promise<RegistroHora[]> {
+    return db.registrosHora
+      .where('obraId')
+      .equals(obraId)
+      .reverse()
+      .sortBy('fecha');
+  },
+
+  async getByTrabajador(trabajadorId: string): Promise<RegistroHora[]> {
+    return db.registrosHora
+      .where('trabajadorId')
+      .equals(trabajadorId)
+      .reverse()
+      .sortBy('fecha');
+  },
+
+  async getByObraAndTrabajador(obraId: string, trabajadorId: string): Promise<RegistroHora[]> {
+    return db.registrosHora
+      .where(['obraId', 'trabajadorId'])
+      .equals([obraId, trabajadorId])
+      .reverse()
+      .sortBy('fecha');
+  },
+
+  async getById(id: string): Promise<RegistroHora | undefined> {
+    return db.registrosHora.get(id);
+  },
+
+  async create(data: Omit<RegistroHora, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    const id = generateId();
+    await db.registrosHora.add({
+      ...data,
+      id,
+      ...createTimestamps(),
+    } as RegistroHora);
+    return id;
+  },
+
+  async update(id: string, data: Partial<RegistroHora>): Promise<void> {
+    await db.registrosHora.update(id, {
+      ...data,
+      ...updateTimestamp(),
+    });
+  },
+
+  async delete(id: string): Promise<void> {
+    await db.registrosHora.delete(id);
+  },
+
+  async getByFechaRango(obraId: string, fechaInicio: string, fechaFin: string): Promise<RegistroHora[]> {
+    return db.registrosHora
+      .where('obraId')
+      .equals(obraId)
+      .filter((r) => r.fecha >= fechaInicio && r.fecha <= fechaFin)
+      .toArray();
+  },
+
+  async getTotalHorasByTrabajador(trabajadorId: string): Promise<number> {
+    const registros = await this.getByTrabajador(trabajadorId);
+    return registros.reduce((sum, r) => sum + r.horasTotales, 0);
+  },
+
+  async getPendientesAprobacion(obraId: string): Promise<RegistroHora[]> {
+    return db.registrosHora
+      .where(['obraId', 'aprobado'])
+      .equals([obraId, false])
+      .toArray();
   },
 };
 

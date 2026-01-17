@@ -292,3 +292,42 @@ export interface ConfirmDialog {
   onCancel?: () => void;
   variant?: 'danger' | 'warning' | 'info';
 }
+
+// ============================================
+// HLA - HORAS LABORALES ACUMULADAS
+// ============================================
+
+export type TipoHora = 'normal' | 'extra' | 'nocturna' | 'festivo';
+
+export interface RegistroHora extends Timestamps {
+  id?: ID;
+  obraId: ID;
+  trabajadorId: ID;
+  fecha: string;
+  horaInicio: string;
+  horaFin: string;
+  tipo: TipoHora;
+  horasTotales: number;
+  descripcion?: string;
+  aprobado: boolean;
+  aprobadasPor?: string;
+  fechaAprobacion?: string;
+  observaciones?: string;
+}
+
+export interface ResumenHorasTrabajador {
+  trabajadorId: ID;
+  nombreTrabajador: string;
+  horasNormales: number;
+  horasExtra: number;
+  horasNocturnas: number;
+  horasFestivos: number;
+  horasTotales: number;
+}
+
+export interface ResumenHorasObra {
+  obraId: ID;
+  periodo: string;
+  trabajadores: ResumenHorasTrabajador[];
+  totalHoras: number;
+}
