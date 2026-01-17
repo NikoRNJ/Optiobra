@@ -16,3 +16,5 @@ export { NuevaCompraPage } from './NuevaCompraPage';
 export { MaterialesPage } from './MaterialesPage';
 export { ReportesPage } from './ReportesPage';
 export { MasPage } from './MasPage';
+export { HorasPage } from './HorasPage';
+export { NuevaHoraPage } from './NuevaHoraPage';

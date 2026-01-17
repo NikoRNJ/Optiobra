@@ -22,6 +22,8 @@ import {
   MaterialesPage,
   ReportesPage,
   MasPage,
+  HorasPage,
+  NuevaHoraPage,
 } from '@/pages';
 import './index.css';
 
@@ -52,6 +54,10 @@ function App() {
           {/* Compras */}
           <Route path="/compras" element={<ComprasPage />} />
           <Route path="/compras/nueva" element={<NuevaCompraPage />} />
+
+          {/* Horas Laborales (HLA) */}
+          <Route path="/horas" element={<HorasPage />} />
+          <Route path="/horas/nueva" element={<NuevaHoraPage />} />
 
           {/* Materiales */}
           <Route path="/materiales" element={<MaterialesPage />} />
