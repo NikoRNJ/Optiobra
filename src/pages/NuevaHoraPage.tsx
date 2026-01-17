@@ -81,12 +81,14 @@ export function NuevaHoraPage() {
 
   useEffect(() => {
     cargarObras();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (watchObraId) {
       cargarTrabajadores(watchObraId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchObraId]);
 
   useEffect(() => {
@@ -152,9 +154,7 @@ export function NuevaHoraPage() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Información del Registro</h2>
-          </CardHeader>
+          <CardHeader title="Información del Registro" />
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Obra */}
@@ -166,14 +166,11 @@ export function NuevaHoraPage() {
                   {...register('obraId')}
                   error={errors.obraId?.message}
                   disabled={!!obraIdParam}
-                >
-                  <option value="">Selecciona una obra</option>
-                  {obras.map((obra) => (
-                    <option key={obra.id} value={obra.id}>
-                      {obra.nombre}
-                    </option>
-                  ))}
-                </Select>
+                  options={[
+                    { value: '', label: 'Selecciona una obra' },
+                    ...obras.map((obra) => ({ value: obra.id!, label: obra.nombre }))
+                  ]}
+                />
               </div>
 
               {/* Trabajador */}
@@ -185,14 +182,11 @@ export function NuevaHoraPage() {
                   {...register('trabajadorId')}
                   error={errors.trabajadorId?.message}
                   disabled={!watchObraId || !!trabajadorIdParam}
-                >
-                  <option value="">Selecciona un trabajador</option>
-                  {trabajadoresActivos.map((trabajador) => (
-                    <option key={trabajador.id} value={trabajador.id}>
-                      {trabajador.nombreCompleto}
-                    </option>
-                  ))}
-                </Select>
+                  options={[
+                    { value: '', label: 'Selecciona un trabajador' },
+                    ...trabajadoresActivos.map((trabajador) => ({ value: trabajador.id!, label: trabajador.nombreCompleto }))
+                  ]}
+                />
                 {!watchObraId && (
                   <p className="text-sm text-gray-500 mt-1">
                     Primero selecciona una obra
@@ -217,13 +211,14 @@ export function NuevaHoraPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipo de Hora <span className="text-red-500">*</span>
                 </label>
-                <Select {...register('tipo')} error={errors.tipo?.message}>
-                  {tiposHora.map((tipo) => (
-                    <option key={tipo.value} value={tipo.value}>
-                      {tipo.label} - {tipo.descripcion}
-                    </option>
-                  ))}
-                </Select>
+                <Select 
+                  {...register('tipo')} 
+                  error={errors.tipo?.message}
+                  options={tiposHora.map((tipo) => ({
+                    value: tipo.value,
+                    label: `${tipo.label} - ${tipo.descripcion}`
+                  }))}
+                />
               </div>
 
               {/* Hora Inicio */}

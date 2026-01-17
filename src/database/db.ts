@@ -408,8 +408,9 @@ export const registrosHoraRepo = {
 
   async getPendientesAprobacion(obraId: string): Promise<RegistroHora[]> {
     return db.registrosHora
-      .where(['obraId', 'aprobado'])
-      .equals([obraId, false])
+      .where('obraId')
+      .equals(obraId)
+      .filter(r => !r.aprobado)
       .toArray();
   },
 };

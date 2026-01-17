@@ -11,7 +11,6 @@ import {
   Search,
   Building2,
   Calendar,
-  User,
   CheckCircle,
   XCircle,
   ChevronRight
@@ -27,7 +26,7 @@ import {
 } from '@/components/ui';
 import { useObraStore, useHoraStore, useTrabajadorStore } from '@/stores';
 import { formatDate } from '@/utils';
-import type { RegistroHora } from '@/types';
+import type { TipoHora } from '@/types';
 
 const TIPO_LABELS: Record<string, string> = {
   normal: 'Normal',
@@ -69,6 +68,7 @@ export function HorasPage() {
 
   useEffect(() => {
     cargarObras();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -76,18 +76,15 @@ export function HorasPage() {
       cargarRegistros(filtroObra);
       cargarTrabajadores(filtroObra);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtroObra]);
 
   useEffect(() => {
-    if (obraIdParam) {
+    if (obraIdParam && !filtroObra) {
       setFiltroObra(obraIdParam);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [obraIdParam]);
-
-  const getObraNombre = (obraId: string) => {
-    const obra = obras.find(o => o.id === obraId);
-    return obra?.nombre || 'Sin obra';
-  };
 
   const getTrabajadorNombre = (trabajadorId: string) => {
     const trabajador = trabajadores.find(t => t.id === trabajadorId);
@@ -204,14 +201,11 @@ export function HorasPage() {
               <Select
                 value={filtroObra}
                 onChange={(e) => setFiltroObra(e.target.value)}
-              >
-                <option value="">Todas las obras</option>
-                {obras.map((obra) => (
-                  <option key={obra.id} value={obra.id}>
-                    {obra.nombre}
-                  </option>
-                ))}
-              </Select>
+                options={[
+                  { value: '', label: 'Todas las obras' },
+                  ...obras.map((obra) => ({ value: obra.id!, label: obra.nombre }))
+                ]}
+              />
             </div>
 
             {/* Trabajador */}
@@ -223,14 +217,11 @@ export function HorasPage() {
                 value={filtroTrabajador}
                 onChange={(e) => setFiltroTrabajador(e.target.value)}
                 disabled={!filtroObra}
-              >
-                <option value="">Todos los trabajadores</option>
-                {trabajadores.map((trabajador) => (
-                  <option key={trabajador.id} value={trabajador.id}>
-                    {trabajador.nombreCompleto}
-                  </option>
-                ))}
-              </Select>
+                options={[
+                  { value: '', label: 'Todos los trabajadores' },
+                  ...trabajadores.map((trabajador) => ({ value: trabajador.id!, label: trabajador.nombreCompleto }))
+                ]}
+              />
             </div>
 
             {/* Tipo de Hora */}
@@ -240,14 +231,15 @@ export function HorasPage() {
               </label>
               <Select
                 value={filtroTipo}
-                onChange={(e) => setFiltroTipo(e.target.value as any)}
-              >
-                <option value="todos">Todos los tipos</option>
-                <option value="normal">Normal</option>
-                <option value="extra">Extra</option>
-                <option value="nocturna">Nocturna</option>
-                <option value="festivo">Festivo</option>
-              </Select>
+                onChange={(e) => setFiltroTipo(e.target.value as TipoHora | 'todos')}
+                options={[
+                  { value: 'todos', label: 'Todos los tipos' },
+                  { value: 'normal', label: 'Normal' },
+                  { value: 'extra', label: 'Extra' },
+                  { value: 'nocturna', label: 'Nocturna' },
+                  { value: 'festivo', label: 'Festivo' },
+                ]}
+              />
             </div>
 
             {/* Estado Aprobación */}
@@ -261,11 +253,12 @@ export function HorasPage() {
                   const value = e.target.value;
                   setFiltroAprobado(value === 'todos' ? 'todos' : value === 'true');
                 }}
-              >
-                <option value="todos">Todas</option>
-                <option value="true">Aprobadas</option>
-                <option value="false">Pendientes</option>
-              </Select>
+                options={[
+                  { value: 'todos', label: 'Todas' },
+                  { value: 'true', label: 'Aprobadas' },
+                  { value: 'false', label: 'Pendientes' },
+                ]}
+              />
             </div>
 
             {/* Búsqueda */}
@@ -291,7 +284,7 @@ export function HorasPage() {
       {/* Lista de Registros */}
       {!filtroObra ? (
         <EmptyState
-          icon={Building2}
+          icon={<Building2 className="w-10 h-10 text-surface-400" />}
           title="Selecciona una obra"
           description="Para ver los registros de horas, primero selecciona una obra"
         />
@@ -302,15 +295,14 @@ export function HorasPage() {
         </div>
       ) : registrosConFiltrosAdicionales.length === 0 ? (
         <EmptyState
-          icon={Clock}
+          icon={<Clock className="w-10 h-10 text-surface-400" />}
           title="No hay registros de horas"
           description="Aún no hay registros de horas para esta obra"
-          action={
-            <Button onClick={() => navigate(`/horas/nueva?obraId=${filtroObra}`)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Registrar Horas
-            </Button>
-          }
+          action={{
+            label: 'Registrar Horas',
+            onClick: () => navigate(`/horas/nueva?obraId=${filtroObra}`),
+            icon: <Plus className="w-4 h-4" />,
+          }}
         />
       ) : (
         <div className="space-y-3">
